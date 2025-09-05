@@ -35,17 +35,17 @@ export default function App() {
   const summaries = useMemo(
     () => ({
       remodeling:
-        "Full-scope pool remodeling: resurfacing, tile/coping refresh, structure repair, equipment upgrades, and finish application with balanced startup.",
+        "We handle every aspect of pool remodeling, from surface to structure. Our resurfacing and replastering services include standard plaster, quartz, and premium pebble finishes that bring fresh beauty and long-lasting durability to your pool. We also refresh or replace tile and coping, and repair expansion joint mastic to keep your pool deck safe and protected. If your pool has deeper issues, we offer full restructuring to address cracks, leaks, and other structural concerns. We can also upgrade your equipment—pumps, filters, heaters, automation, and lighting—to make your system more efficient and easier to manage. Every remodel is finished with a careful water-balance startup, ensuring your new surface is protected from day one. For a personal touch, we install custom additions such as tanning ledges, water features, and diving boards. These features can transform your pool into a space that’s not just restored, but completely reimagined.",
       tile:
-        "Waterline and accent tile replacement/repair using chemical-resistant materials, precise substrate prep, and expansion control.",
+        "We specialize in waterline and accent tile replacement or repair, using chemical-resistant materials designed to withstand the harsh pool environment. Every job starts with precise substrate preparation and proper expansion control, ensuring a flawless installation that lasts. Whether you’re restoring worn or damaged tile or upgrading to a fresh new look, we provide a wide selection of styles to match your design. We also create custom tile layouts and accents, giving you the freedom to add a unique, personalized touch to your pool. Our attention to detail means your tile isn’t just repaired—it’s transformed into a feature that enhances the beauty and durability of your pool for years to come.",
       features:
-        "Sheer descents, scuppers, bubblers, deck jets, grottos, rockwork, and lighting—designed for correct flow, noise profile, and longevity.",
+        "We install custom water and lighting features that bring movement, sound, and atmosphere to your pool. Options include sheer descents, scuppers, bubblers, deck jets, grottos, rockwork, and accent lighting—all designed with proper flow, balanced noise levels, and long-term durability in mind. These features don’t just add beauty; they create a resort-style experience right in your backyard.",
       rails:
-        "Core-drilled stainless rails and compliant fencing. Epoxy anchors and code-aware placement for safe, elegant access.",
+        "We provide core-drilled stainless steel rails and safety fencing to enhance both accessibility and protection around your pool. Every installation uses heavy-duty epoxy anchors and precise, code-compliant placement, ensuring safe, secure, and elegant access that lasts for years.",
       turf:
-        "Low-maintenance turf with drainage base, cool-touch options, clean edging, and resilient seams around the deck.",
+        "We install premium low-maintenance turf systems that transform the space around your pool into a clean, green, and usable surface all year long. Every installation is built on a proper drainage base to prevent standing water and maintain long-term performance. For comfort, we offer cool-touch turf options that stay softer and cooler under the sun, even on the hottest days. To ensure a polished look, we finish with precise edging and resilient seams that hold up against foot traffic, weather, and poolside activity. This creates a smooth, natural appearance that blends seamlessly with your pool deck. Durable, attractive, and practical, our turf systems are the perfect finishing touch for a backyard designed to be enjoyed without the hassle of constant upkeep.",
       covers:
-        "Automatic and manual pool covers sized to your basin. Energy savings, debris control, safety-first hardware, and service for tracks, reels, and fabrics.",
+        "We offer both automatic and manual pool covers custom-sized to fit your pool perfectly. Covers not only keep debris out but also provide measurable energy savings by reducing heat loss and evaporation. Our systems are built with safety-first hardware to give you peace of mind while protecting your investment. In addition to new installations, we service and maintain all components, including tracks, reels, and fabrics, ensuring smooth operation and long-lasting performance. Whether you’re looking for convenience, safety, or efficiency, a properly fitted pool cover is an essential upgrade for any pool.",
     }),
     []
   );
@@ -54,14 +54,31 @@ export default function App() {
   const [expandedKey, setExpandedKey] = useState(null);
   const [fromRect, setFromRect] = useState(null);
   const cardRefs = useRef({}); // key -> element
+  const whatRef = useRef(null); // <— "What we do" section anchor
 
+  // Scroll to "What we do" first, then open (helps phones)
   const handleOpen = (key) => {
-    const el = cardRefs.current[key];
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    setFromRect({ x: r.x, y: r.y, w: r.width, h: r.height });
-    setExpandedKey(key);
+    const openNow = () => {
+      const el = cardRefs.current[key];
+      if (!el) { setExpandedKey(key); return; }
+      const r = el.getBoundingClientRect();
+      setFromRect({ x: r.x, y: r.y, w: r.width, h: r.height });
+      setExpandedKey(key);
+    };
+
+    if (whatRef.current) {
+      // Smooth scroll to the section top, then open after a short delay
+      try {
+        whatRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(openNow, 350); // small delay to let scroll settle on mobile
+      } catch {
+        openNow();
+      }
+    } else {
+      openNow();
+    }
   };
+
   const handleClose = () => setExpandedKey(null);
 
   return (
@@ -75,7 +92,7 @@ export default function App() {
       </header>
 
       {/* WHAT WE DO (looping background video) */}
-      <section className="section section--video fade-on-view">
+      <section ref={whatRef} className="section section--video fade-on-view">
         <div className="video-bg" aria-hidden="true">
           <video
             className="video-bg__media"
@@ -92,7 +109,7 @@ export default function App() {
         <div className="container">
           <h2 className="section__title" style={{ textAlign: "center" }}>What we do</h2>
 
-        <div className={`grid ${expandedKey ? "grid--collapsed" : ""}`}>
+          <div className={`grid ${expandedKey ? "grid--collapsed" : ""}`}>
             {services.map((s) => (
               <ServiceCard
                 key={s.key}
@@ -245,8 +262,7 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     return () => clearInterval(rotRef.current);
   }, [slides]);
 
-  // NOTE: We intentionally DO NOT lock body scroll now.
-  // This allows the page behind the overlay to continue scrolling.
+  // We DO NOT lock body scroll—page can still scroll under overlay.
 
   // FLIP animation using WAAPI
   useLayoutEffect(() => {
@@ -348,7 +364,7 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
           <div className="expanded__text" style={{ background: "#fff", color: "#1a2b3c" }}>
             <p>{summary}</p>
             <p style={{ color: "#607185" }}>
-              Add project details, typical timelines, material options, warranties, and care tips here. This panel scrolls if content is long.
+                Images show examples of our work; your project may vary. Please contact us with an inquiry. We accommodate.
             </p>
           </div>
         </div>
@@ -485,12 +501,12 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 .expanded-overlay{
   position: fixed; inset: 0;
   display: grid; align-items: start; justify-items: center;
-  padding: clamp(10px, 4vh, 24px) 12px;  /* smaller on phones */
+  padding: clamp(10px, 4vh, 24px) 12px;
   background: rgba(0,0,0,.28);
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
   z-index: 50; will-change: transform, opacity;
 
-  /* Allow scrolling the page underneath when clicking/scrolling outside the modal */
+  /* Allow background page scroll; modal remains interactive */
   pointer-events: none;
 }
 .expanded{
@@ -499,8 +515,6 @@ body{margin:0;background:var(--bg);color:var(--fg)}
   border-radius: 12px;
   box-shadow: var(--expanded-shadow);
   overflow: clip; position: relative; will-change: transform, opacity;
-
-  /* Re-enable interactions on the modal itself */
   pointer-events: auto;
 }
 @media (max-width: 560px){
