@@ -3,8 +3,15 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './styles.css'
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+console.log('Booting React…')  // sanity check in DevTools
+
+const rootEl = document.getElementById('root')
+if (!rootEl) {
+  console.error('No #root element found in index.html')
+} else {
+  ReactDOM.createRoot(rootEl).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  )
+}
