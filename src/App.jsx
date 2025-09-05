@@ -1,5 +1,35 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
+/* ------------------- BUILD-TIME IMAGE MAP (no 404s) ------------------- */
+const imageModules = import.meta.glob(
+  "/src/assets/images/*.{jpg,jpeg,png,webp}",
+  { eager: true, as: "url" }
+);
+
+// Build prefix -> [urls] (sorted by numeric suffix)
+const imageMap = Object.entries(imageModules).reduce((acc, [path, url]) => {
+  const file = path.split("/").pop() || "";
+  const prefix = file.split("_")[0].toLowerCase();
+  (acc[prefix] ??= []).push(url);
+  return acc;
+}, {});
+
+for (const k in imageMap) {
+  imageMap[k].sort((a, b) => {
+    const na = (a.match(/_(\d+)\./)?.[1] ?? "0") | 0;
+    const nb = (b.match(/_(\d+)\./)?.[1] ?? "0") | 0;
+    return na - nb;
+  });
+}
+
+function slidesFor(prefix) {
+  return imageMap[prefix?.toLowerCase()] ?? [];
+}
+function firstSlideFor(prefix) {
+  const arr = slidesFor(prefix);
+  return arr.length ? arr[0] : null;
+}
+
 export default function App() {
   // Fade-on-view observer
   useEffect(() => {
@@ -67,10 +97,9 @@ export default function App() {
     };
 
     if (whatRef.current) {
-      // Smooth scroll to the section top, then open after a short delay
       try {
         whatRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-        setTimeout(openNow, 350); // small delay to let scroll settle on mobile
+        setTimeout(openNow, 350);
       } catch {
         openNow();
       }
@@ -82,7 +111,7 @@ export default function App() {
   const handleClose = () => setExpandedKey(null);
 
   return (
-    <div style={{ fontFamily: "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", color: "#1a2b3c", margin: 0 }}>
+    <div style={{ fontFamily: "Oswald, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", color: "#1a2b3c", margin: 0 }}>
       <style>{css}</style>
 
       {/* HERO */}
@@ -134,38 +163,30 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTACT — single centered card */}
+      {/* CONTACT — plain centered lines, no card, label on its own line */}
       <section className="contact-section fade-on-view" id="contact">
         <div className="container">
-          <header className="contact-head">
-            <h2>Contact us</h2>
-            <p>We’re happy to answer questions, provide quotes, and help you plan your project.</p>
-          </header>
+          <h2 className="contact-title">Contact us</h2>
 
-          <div className="contact-single">
-            <div className="contact-card">
-              <div className="contact-card__header">
-                <h3>Get in touch</h3>
-              </div>
-              <div className="contact-card__body">
-                <div className="detail">
-                  <div className="label">Phone</div>
-                  <a className="value link" href="tel:+18175643400">817 564 3400</a>
-                </div>
-                <div className="divider" />
-                <div className="detail">
-                  <div className="label">Email</div>
-                  <a className="value link" href="mailto:deepend.service@deependpoolsolutions.com">
-                    deepend.service@deependpoolsolutions.com
-                  </a>
-                </div>
-              </div>
+          <div className="contact-lines">
+            <div className="contact-block">
+              <div className="contact-label">E-mail:</div>
+              <a className="contact-value" href="mailto:deepend.service@deependpoolsolutions.com">
+                deepend.service@deependpoolsolutions.com
+              </a>
             </div>
-          </div>
 
-          <footer className="contact-foot">
-            <p>Prefer a callback? Mention a good time in your message and we’ll reach out.</p>
-          </footer>
+            <div className="contact-block">
+              <div className="contact-label">Phone:</div>
+              <a className="contact-value" href="tel:+18175643400">
+                817&nbsp;564&nbsp;3400
+              </a>
+            </div>
+
+            <p className="contact-note">
+              Prefer a callback? Mention a good time in your message and we’ll reach out.
+            </p>
+          </div>
         </div>
       </section>
     </div>
@@ -176,17 +197,11 @@ export default function App() {
 function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
   const [preview, setPreview] = useState(null);
 
-  // Load per-card preview once (_1 preferred; else first found)
+  // Load per-card preview instantly from the build-time map (no network probing)
   useEffect(() => {
-    let alive = true;
-    (async () => {
-      const first = await discoverFirst(data.prefix || data.key);
-      if (alive) setPreview(first);
-    })();
-    return () => { alive = false; };
+    setPreview(firstSlideFor(data.prefix || data.key));
   }, [data.prefix, data.key]);
 
-  // Gradient on the whole card; thin white stroke; image sits beneath the label
   const styleCard = {
     background: `linear-gradient(160deg, ${theme.start} 0%, ${theme.end} 100%)`,
     border: "2px solid #ffffff",
@@ -248,12 +263,8 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
   const rotRef = useRef(null);
 
   useEffect(() => {
-    let alive = true;
-    (async () => {
-      const urls = await discover(service.prefix);
-      if (alive) setSlides(urls.length ? urls : [`/images/${service.prefix}_1.jpg`]);
-    })();
-    return () => (alive = false);
+    const urls = slidesFor(service.prefix);
+    setSlides(urls.length ? urls : []);
   }, [service.prefix]);
 
   useEffect(() => {
@@ -261,8 +272,6 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     rotRef.current = setInterval(() => setIdx((i) => (i + 1) % slides.length), 3500);
     return () => clearInterval(rotRef.current);
   }, [slides]);
-
-  // We DO NOT lock body scroll—page can still scroll under overlay.
 
   // FLIP animation using WAAPI
   useLayoutEffect(() => {
@@ -348,23 +357,33 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
 
         <div className="expanded__content">
           {/* Slider */}
-          <div className="slider">
-            <ul className="slider__track" style={{ transform: `translate3d(${-idx * 100}%,0,0)` }}>
-              {slides.map((src, i) => (
-                <li className="slider__slide" key={src}>
-                  <img src={src} alt={`${service.title} ${i + 1}`} />
-                </li>
-              ))}
-            </ul>
-            <button className="nav prev" aria-label="Previous" onClick={() => setIdx((i) => (i - 1 + slides.length) % slides.length)}>&#10094;</button>
-            <button className="nav next" aria-label="Next" onClick={() => setIdx((i) => (i + 1) % slides.length)}>&#10095;</button>
-          </div>
+          {slides.length > 0 ? (
+            <div className="slider">
+              <ul className="slider__track" style={{ transform: `translate3d(${-idx * 100}%,0,0)` }}>
+                {slides.map((src, i) => (
+                  <li className="slider__slide" key={`${src}-${i}`}>
+                    <img src={src} alt={`${service.title} ${i + 1}`} />
+                  </li>
+                ))}
+              </ul>
+              <button className="nav prev" aria-label="Previous" onClick={() => setIdx((i) => (i - 1 + slides.length) % slides.length)}>&#10094;</button>
+              <button className="nav next" aria-label="Next" onClick={() => setIdx((i) => (i + 1) % slides.length)}>&#10095;</button>
+            </div>
+          ) : (
+            <div className="slider" style={{ display: "grid", placeItems: "center", padding: 16 }}>
+              <div className="slider__slide" style={{ width: "100%" }}>
+                <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", aspectRatio: "16/9", background: "#eef3f8", color: "#4a5b6a" }}>
+                  No images available
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Scrollable text (white background) */}
           <div className="expanded__text" style={{ background: "#fff", color: "#1a2b3c" }}>
             <p>{summary}</p>
             <p style={{ color: "#607185" }}>
-                Images show examples of our work; your project may vary. Please contact us with an inquiry. We accommodate.
+              Images show examples of our work; your project may vary. Please contact us with an inquiry. We accommodate.
             </p>
           </div>
         </div>
@@ -373,58 +392,10 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
   );
 }
 
-/* ------------------- HELPERS ------------------- */
-async function discoverFirst(prefix) {
-  const exts = ["jpg", "jpeg", "png", "webp"];
-  for (const ext of exts) {
-    const url = `/images/${prefix}_1.${ext}`;
-    // eslint-disable-next-line no-await-in-loop
-    const ok = await new Promise((res) => {
-      const img = new Image();
-      img.onload = () => res(true);
-      img.onerror = () => res(false);
-      img.src = url;
-    });
-    if (ok) return url;
-  }
-  for (let i = 2; i <= 40; i++) {
-    for (const ext of exts) {
-      const url = `/images/${prefix}_${i}.${ext}`;
-      // eslint-disable-next-line no-await-in-loop
-      const ok = await new Promise((res) => {
-        const img = new Image();
-        img.onload = () => res(true);
-        img.onerror = () => res(false);
-        img.src = url;
-      });
-      if (ok) return url;
-    }
-  }
-  return null;
-}
-async function discover(prefix, maxN = 40) {
-  const exts = ["jpg", "jpeg", "png", "webp"];
-  const urls = [];
-  for (let i = 1; i <= maxN; i++) {
-    let found = null;
-    for (const ext of exts) {
-      const url = `/images/${prefix}_${i}.${ext}`;
-      // eslint-disable-next-line no-await-in-loop
-      const ok = await new Promise((res) => {
-        const img = new Image();
-        img.onload = () => res(true);
-        img.onerror = () => res(false);
-        img.src = url;
-      });
-      if (ok) { found = url; break; }
-    }
-    if (found) urls.push(found);
-  }
-  return urls;
-}
-
 /* ------------------- INLINE CSS ------------------- */
 const css = `
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300..700&display=swap');
+
 :root{
   --container: 1180px;
   --border: rgba(0,0,0,.10);
@@ -445,7 +416,12 @@ const css = `
 *{box-sizing:border-box}
 html,body,#root{height:100%}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg)}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family: 'Oswald', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
 
 .container{ max-width: var(--container); margin:0 auto; padding:0 20px }
 
@@ -494,7 +470,6 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 .service__thumb{ position:relative; width:100%; aspect-ratio:16/9 }
 .service__thumb img{ width:100%; height:100%; object-fit:cover }
 
-/* Title band sits on top of gradient & image */
 .service__title{ padding:12px 14px; font-weight:800; color:#fff }
 
 /* ----------- FLIP Overlay ----------- */
@@ -529,7 +504,6 @@ body{margin:0;background:var(--bg);color:var(--fg)}
   width:40px; height:40px; border:none; border-radius:10px; cursor:pointer;
   background:#eef1f6; color:#111; font-size:26px; line-height:40px; text-align:center;
   transition: background .18s ease, transform .18s ease;
-  touch-action: manipulation;
 }
 .close:hover{ background:#e5e9f1; transform: translateY(-1px) }
 
@@ -550,7 +524,6 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 .nav{
   position:absolute; top:50%; transform:translateY(-50%);
   background:rgba(0,0,0,.45); color:#fff; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer;
-  touch-action: manipulation;
 }
 .nav:hover{ background:rgba(0,0,0,.65) }
 .prev{ left:8px } .next{ right:8px }
@@ -565,48 +538,50 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 }
 .expanded__text p{ margin:0 0 10px; line-height:1.55 }
 
-/* ------------------- CONTACT SECTION (single centered card) ------------------- */
+/* ------------------- CONTACT SECTION (plain centered) ------------------- */
 .contact-section{
   background: var(--strip);
   border-top: 4px solid var(--strip-border);
   padding: clamp(36px, 6vw, 72px) 0;
 }
-.contact-head{
-  text-align:center;
-  margin: 0 auto clamp(20px, 4vw, 36px);
-  max-width: 760px;
-}
-.contact-head h2{
-  margin:0 0 6px;
+.contact-title{
+  margin: 0 0 14px;
   font-size: clamp(24px,3.2vw,34px);
   color:#0f2732;
+  text-align:center;
 }
-.contact-head p{
-  margin:0;
+.contact-lines{
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 8px;
+}
+.contact-block{
+  margin: 10px auto 14px;
+}
+.contact-label{
+  display:block;
+  font-weight: 700;
+  color:#0f2732;
+  margin-bottom: 6px;
+  font-size: clamp(18px, 2.6vw, 20px);
+}
+.contact-value{
+  display:block;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(15,39,50,.25);
+  color:#0f2732;
+  font-weight: 700;
+  font-size: clamp(18px, 2.6vw, 22px);
+  margin: 0 auto;
+  width: fit-content;
+}
+.contact-value:hover{ border-bottom-color: rgba(15,39,50,.55) }
+.contact-note{
+  margin-top: 6px;
   color:#2f4750;
+  font-size: clamp(14px, 2vw, 16px);
 }
-.contact-single{ display:grid; place-items:center; }
-.contact-card{
-  width: min(720px, 100%);
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,.10);
-  border-radius: 14px;
-  box-shadow: 0 14px 30px rgba(0,0,0,.14);
-  overflow: hidden;
-  display:flex;
-  flex-direction:column;
-}
-.contact-card__header{ padding: 16px 18px 10px; border-bottom: 1px solid rgba(0,0,0,.06) }
-.contact-card__header h3{ margin:0; font-size: clamp(18px,2.2vw,22px); color:#0f2732 }
-.contact-card__body{ padding: 14px 18px 18px; display:flex; flex-direction:column; gap: 12px }
-.detail{ display:grid; grid-template-columns: 120px 1fr; align-items:center; gap: 10px }
-.label{ color:#3a5560; font-weight:700 }
-.value{ color:#0f2732; font-weight:800 }
-.link{ text-decoration:none; border-bottom: 1px dashed rgba(15,39,50,.25) }
-.link:hover{ border-bottom-color: rgba(15,39,50,.55) }
-.divider{ height:1px; width:100%; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.10), rgba(0,0,0,0)) }
-
-.contact-foot{ text-align:center; margin-top: clamp(18px, 4vw, 28px); color:#2f4750 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
