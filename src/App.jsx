@@ -18,7 +18,7 @@ export default function App() {
     { key: "features", title: "Water Features", prefix: "waterfeatures" },
     { key: "rails", title: "Handrails / Fences", prefix: "rails" },
     { key: "turf", title: "Turf", prefix: "turf" },
-    { key: "covers", title: "Pool Covers", prefix: "covers" }, // renamed from inspections
+    { key: "covers", title: "Pool Covers", prefix: "covers" }, // renamed
   ];
 
   // Palette-inspired themes for cards (gradient colors)
@@ -28,7 +28,7 @@ export default function App() {
     features:    { start: "#42e9c0", end: "#79f2d4" },
     rails:       { start: "#378aa3", end: "#61c6c0" },
     turf:        { start: "#1f6d7f", end: "#49aca2" },
-    covers:      { start: "#aef3ef", end: "#d6fcfb" }, // took the former inspections palette
+    covers:      { start: "#aef3ef", end: "#d6fcfb" },
   };
 
   // Summaries
@@ -92,7 +92,7 @@ export default function App() {
         <div className="container">
           <h2 className="section__title" style={{ textAlign: "center" }}>What we do</h2>
 
-          <div className={`grid ${expandedKey ? "grid--collapsed" : ""}`}>
+        <div className={`grid ${expandedKey ? "grid--collapsed" : ""}`}>
             {services.map((s) => (
               <ServiceCard
                 key={s.key}
@@ -117,7 +117,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTACT — single centered card, symmetrical & clean */}
+      {/* CONTACT — single centered card */}
       <section className="contact-section fade-on-view" id="contact">
         <div className="container">
           <header className="contact-head">
@@ -245,12 +245,8 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     return () => clearInterval(rotRef.current);
   }, [slides]);
 
-  useEffect(() => {
-    const { body } = document;
-    const prev = body.style.overflow;
-    body.style.overflow = "hidden";
-    return () => { body.style.overflow = prev; };
-  }, []);
+  // NOTE: We intentionally DO NOT lock body scroll now.
+  // This allows the page behind the overlay to continue scrolling.
 
   // FLIP animation using WAAPI
   useLayoutEffect(() => {
@@ -362,11 +358,8 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
 }
 
 /* ------------------- HELPERS ------------------- */
-// Find the first preview image for a service (tries _1 first, then first found)
 async function discoverFirst(prefix) {
   const exts = ["jpg", "jpeg", "png", "webp"];
-
-  // Prefer exactly *_1
   for (const ext of exts) {
     const url = `/images/${prefix}_1.${ext}`;
     // eslint-disable-next-line no-await-in-loop
@@ -378,8 +371,6 @@ async function discoverFirst(prefix) {
     });
     if (ok) return url;
   }
-
-  // Fallback: scan more numbers in case _1 isn't present
   for (let i = 2; i <= 40; i++) {
     for (const ext of exts) {
       const url = `/images/${prefix}_${i}.${ext}`;
@@ -395,8 +386,6 @@ async function discoverFirst(prefix) {
   }
   return null;
 }
-
-// Discover a whole list for expanded galleries
 async function discover(prefix, maxN = 40) {
   const exts = ["jpg", "jpeg", "png", "webp"];
   const urls = [];
@@ -433,7 +422,6 @@ const css = `
   --hero-bg: #f3f4f6;
   --hero-max-w: 500px;
 
-  --expanded-bg: #ffffff;
   --expanded-border: rgba(0,0,0,.12);
   --expanded-shadow: 0 18px 40px rgba(0,0,0,.18);
 }
@@ -497,39 +485,46 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 .expanded-overlay{
   position: fixed; inset: 0;
   display: grid; align-items: start; justify-items: center;
-  padding: 8vh 16px;
+  padding: clamp(10px, 4vh, 24px) 12px;  /* smaller on phones */
   background: rgba(0,0,0,.28);
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
   z-index: 50; will-change: transform, opacity;
-}
-.flip-fallback-in{ opacity: 0; transform-origin: top left; transform: scale(.98) }
-.flip-fallback-in--play{
-  opacity: 1; transform: scale(1);
-  transition: transform .24s cubic-bezier(.2,.8,.2,1), opacity .24s cubic-bezier(.2,.8,.2,1);
-}
 
+  /* Allow scrolling the page underneath when clicking/scrolling outside the modal */
+  pointer-events: none;
+}
 .expanded{
   width: min(1100px, 96vw);
   border: 1px solid var(--expanded-border);
   border-radius: 12px;
   box-shadow: var(--expanded-shadow);
   overflow: clip; position: relative; will-change: transform, opacity;
+
+  /* Re-enable interactions on the modal itself */
+  pointer-events: auto;
+}
+@media (max-width: 560px){
+  .expanded{
+    width: 100%;
+    border-radius: 10px;
+  }
 }
 
 .close{
   position:absolute; top:10px; right:12px;
-  width:36px; height:36px; border:none; border-radius:8px; cursor:pointer;
-  background:#eef1f6; color:#111; font-size:22px; line-height:36px; text-align:center;
+  width:40px; height:40px; border:none; border-radius:10px; cursor:pointer;
+  background:#eef1f6; color:#111; font-size:26px; line-height:40px; text-align:center;
   transition: background .18s ease, transform .18s ease;
+  touch-action: manipulation;
 }
 .close:hover{ background:#e5e9f1; transform: translateY(-1px) }
 
-.expanded__header{ padding: 16px 16px 8px }
+.expanded__header{ padding: 14px 14px 8px }
 .expanded__header h3{ margin:0; font-size: clamp(18px, 2.6vw, 26px) }
 
 .expanded__content{
   display:grid; grid-template-columns: 1.25fr 1fr;
-  gap: 14px; padding: 8px 16px 16px;
+  gap: 14px; padding: 8px 14px 14px;
 }
 @media(max-width:900px){ .expanded__content{ grid-template-columns: 1fr } }
 
@@ -541,12 +536,19 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 .nav{
   position:absolute; top:50%; transform:translateY(-50%);
   background:rgba(0,0,0,.45); color:#fff; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer;
+  touch-action: manipulation;
 }
 .nav:hover{ background:rgba(0,0,0,.65) }
 .prev{ left:8px } .next{ right:8px }
 
 /* Scrollable text (white background) */
-.expanded__text{ border:1px solid var(--border); border-radius:8px; padding:12px; max-height: 360px; overflow:auto; background:#fff }
+.expanded__text{
+  border:1px solid var(--border); border-radius:8px; padding:12px;
+  max-height: 360px; overflow:auto; background:#fff;
+}
+@media (max-width: 560px){
+  .expanded__text{ max-height: 320px; }
+}
 .expanded__text p{ margin:0 0 10px; line-height:1.55 }
 
 /* ------------------- CONTACT SECTION (single centered card) ------------------- */
@@ -569,11 +571,7 @@ body{margin:0;background:var(--bg);color:var(--fg)}
   margin:0;
   color:#2f4750;
 }
-
-.contact-single{
-  display:grid;
-  place-items:center;
-}
+.contact-single{ display:grid; place-items:center; }
 .contact-card{
   width: min(720px, 100%);
   background: #ffffff;
@@ -584,44 +582,17 @@ body{margin:0;background:var(--bg);color:var(--fg)}
   display:flex;
   flex-direction:column;
 }
-.contact-card__header{
-  padding: 16px 18px 10px;
-  border-bottom: 1px solid rgba(0,0,0,.06);
-}
-.contact-card__header h3{
-  margin:0; font-size: clamp(18px,2.2vw,22px); color:#0f2732;
-}
-.contact-card__body{
-  padding: 14px 18px 18px;
-  display:flex;
-  flex-direction:column;
-  gap: 12px;
-}
-.detail{
-  display:grid;
-  grid-template-columns: 120px 1fr;
-  align-items:center;
-  gap: 10px;
-}
-.label{
-  color:#3a5560; font-weight:700;
-}
-.value{
-  color:#0f2732; font-weight:800;
-}
+.contact-card__header{ padding: 16px 18px 10px; border-bottom: 1px solid rgba(0,0,0,.06) }
+.contact-card__header h3{ margin:0; font-size: clamp(18px,2.2vw,22px); color:#0f2732 }
+.contact-card__body{ padding: 14px 18px 18px; display:flex; flex-direction:column; gap: 12px }
+.detail{ display:grid; grid-template-columns: 120px 1fr; align-items:center; gap: 10px }
+.label{ color:#3a5560; font-weight:700 }
+.value{ color:#0f2732; font-weight:800 }
 .link{ text-decoration:none; border-bottom: 1px dashed rgba(15,39,50,.25) }
 .link:hover{ border-bottom-color: rgba(15,39,50,.55) }
+.divider{ height:1px; width:100%; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.10), rgba(0,0,0,0)) }
 
-.divider{
-  height:1px; width:100%;
-  background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.10), rgba(0,0,0,0));
-}
-
-.contact-foot{
-  text-align:center;
-  margin-top: clamp(18px, 4vw, 28px);
-  color:#2f4750;
-}
+.contact-foot{ text-align:center; margin-top: clamp(18px, 4vw, 28px); color:#2f4750 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
