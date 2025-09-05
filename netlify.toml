@@ -2,7 +2,10 @@
   command = "npm run build"
   publish = "dist"
 
-# SPA fallback (if you later add React Router)
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA fallback—safe to keep even if not using React Router yet
 [[redirects]]
   from = "/*"
   to = "/index.html"
