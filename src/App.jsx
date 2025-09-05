@@ -84,7 +84,7 @@ export default function App() {
   const [expandedKey, setExpandedKey] = useState(null);
   const [fromRect, setFromRect] = useState(null);
   const cardRefs = useRef({}); // key -> element
-  const whatRef = useRef(null); // <— "What we do" section anchor
+  const whatRef = useRef(null); // "What we do" section anchor
 
   // Scroll to "What we do" first, then open (helps phones)
   const handleOpen = (key) => {
@@ -114,10 +114,33 @@ export default function App() {
     <div style={{ fontFamily: "Oswald, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", color: "#1a2b3c", margin: 0 }}>
       <style>{css}</style>
 
+      {/* TOPBAR */}
+      <div className="topbar">
+        <div className="container topbar__inner">
+          <div className="topbar__text">
+            Take a listen to The Deep End Pool Podcast!
+          </div>
+          <a
+            className="topbar__btn"
+            href="https://thedeependpoolpodcast.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Check out our podcast"
+          >
+            Check out our podcast
+          </a>
+        </div>
+      </div>
+
       {/* HERO */}
       <header className="hero fade-on-view">
         <img className="hero-img" src="/images/topimage.png" alt="Deep End Pool Solutions" />
-        <div className="hero-strip" aria-hidden="true" />
+        {/* Yellow strip with cyan heading (no white stroke) */}
+        <div className="hero-strip">
+          <div className="container">
+            <div className="strip-title">Here’s what we do…</div>
+          </div>
+        </div>
       </header>
 
       {/* WHAT WE DO (looping background video) */}
@@ -136,8 +159,6 @@ export default function App() {
         </div>
 
         <div className="container">
-          <h2 className="section__title" style={{ textAlign: "center" }}>What we do</h2>
-
           <div className={`grid ${expandedKey ? "grid--collapsed" : ""}`}>
             {services.map((s) => (
               <ServiceCard
@@ -163,7 +184,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTACT — plain centered lines, no card, label on its own line */}
+      {/* CONTACT — plain centered lines, no card */}
       <section className="contact-section fade-on-view" id="contact">
         <div className="container">
           <h2 className="contact-title">Contact us</h2>
@@ -184,7 +205,7 @@ export default function App() {
             </div>
 
             <p className="contact-note">
-              Prefer a callback? Mention a good time in your message and we’ll reach out.
+              Concact us with your inquiry and we'll help you on your project journey!
             </p>
           </div>
         </div>
@@ -403,7 +424,7 @@ const css = `
   --bg: #ffffff;
   --fg: #1a2b3c;
 
-  --strip: #e6d87a;
+  --strip: #e6d87a;           /* yellow bar */
   --strip-border: #1c5aa3;
 
   --hero-bg: #f3f4f6;
@@ -411,6 +432,10 @@ const css = `
 
   --expanded-border: rgba(0,0,0,.12);
   --expanded-shadow: 0 18px 40px rgba(0,0,0,.18);
+
+  --topbar-bg-1: #0c1550;
+  --topbar-bg-2: #0a1040;
+  --cyan: #13909e;
 }
 
 *{box-sizing:border-box}
@@ -425,14 +450,80 @@ body{
 
 .container{ max-width: var(--container); margin:0 auto; padding:0 20px }
 
+/* =============== TOPBAR =============== */
+.topbar{
+  background: linear-gradient(180deg, var(--topbar-bg-1), var(--topbar-bg-2));
+  color:#e8efff;
+  font-size: 14px;
+  letter-spacing: .02em;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.topbar__inner{
+  position: relative;              /* so the button can be absolutely positioned */
+  padding: 6px 0;
+  min-height: 36px;
+}
+.topbar__text{
+  width: 100%;
+  text-align: center;              /* centered across the full bar */
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 6px 80px 6px 80px;      /* ensure centered text never sits under the button */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar__btn{
+  position: absolute;
+  right: 0; top: 50%; transform: translateY(-50%);
+  text-decoration: none;
+  color:#e8efff;
+  border: 2px solid #ffffff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  transition: transform .12s ease, background-color .12s ease, color .12s ease, border-color .12s ease;
+  background: transparent;
+  white-space: nowrap;
+}
+.topbar__btn:hover{
+  transform: translateY(-50%) translateY(-1px);
+  background: rgba(255,255,255,.06);
+  border-color: #fff;
+  color: #fff;
+}
+@media (max-width: 560px){
+  .topbar__inner{ padding: 8px 0 44px; }      /* space for the button below */
+  .topbar__text{ padding: 6px 10px; }
+  .topbar__btn{
+    position: absolute;
+    right: 10px; left: 10px; top: auto; bottom: 6px;
+    transform: none;
+    text-align: center;
+  }
+}
+
 /* HERO */
 .hero{ margin:0; padding:20px 0 0; background: var(--hero-bg); text-align:center }
 .hero-img{ width:100%; max-width: var(--hero-max-w); height:auto; display:inline-block; margin:0 auto }
-.hero-strip{ height:44px; background: var(--strip); border-top:4px solid var(--strip-border); width:100% }
+
+/* Yellow strip with cyan heading (no white stroke) */
+.hero-strip{
+  position: relative;
+  height: 54px;
+  background: var(--strip);
+  border-top:4px solid var(--strip-border);
+  display:flex; align-items:center;
+}
+.strip-title{
+  font-size: clamp(18px, 2.6vw, 22px);
+  font-weight: 800;
+  color: var(--cyan);
+  /* removed white stroke & white shadow */
+}
 
 /* Sections */
 .section{ position:relative; padding: clamp(22px, 5vw, 56px) 0 }
-.section__title{ margin:0 0 22px; font-size: clamp(22px, 3.2vw, 32px) }
 
 /* Section video bg */
 .section--video{ overflow:clip }
@@ -480,8 +571,6 @@ body{
   background: rgba(0,0,0,.28);
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
   z-index: 50; will-change: transform, opacity;
-
-  /* Allow background page scroll; modal remains interactive */
   pointer-events: none;
 }
 .expanded{
@@ -493,10 +582,7 @@ body{
   pointer-events: auto;
 }
 @media (max-width: 560px){
-  .expanded{
-    width: 100%;
-    border-radius: 10px;
-  }
+  .expanded{ width: 100%; border-radius: 10px; }
 }
 
 .close{
@@ -556,9 +642,7 @@ body{
   text-align: center;
   padding: 0 8px;
 }
-.contact-block{
-  margin: 10px auto 14px;
-}
+.contact-block{ margin: 10px auto 14px; }
 .contact-label{
   display:block;
   font-weight: 700;
