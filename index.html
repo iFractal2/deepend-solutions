@@ -1,60 +1,16 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Deepend Pool Solutions</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-  <meta name="description" content="Deepend Pool Solutions — Replaster, Mastic, Coping, Tile, Decks, Water Features, Handrails/Fences, Turf, Inspections & Leak Detections."/>
-</head>
-<body>
-  <header id="hero" class="section fade-on-view">
-    <div class="hero-media">
-      <!-- Rotating header images auto-discovered: images/header_1.jpg, header_2.jpg, ... -->
-      <div class="hero-rotator" id="heroRotator"></div>
-      <!-- Optional overlay assets: images/overlay_1.png, overlay_2.png, ... -->
-      <div class="hero-overlays" id="heroOverlays"></div>
-    </div>
-    <div class="hero-content">
-      <h1>Deepend Pool Solutions</h1>
-      <p class="tagline">Renovations • Repairs • Upgrades</p>
-    </div>
-    <div class="scroll-indicator">Scroll</div>
-  </header>
-
-  <main id="contentWrapper" class="page-flow">
-    <!-- Article: What we do -->
-    <section id="services" class="section fade-on-view">
-      <article class="article-card">
-        <h2>What we do:</h2>
-        <div class="services-grid" id="servicesGrid"><!-- filled by JS --></div>
-      </article>
-    </section>
-
-    <!-- Article: Gallery -->
-    <section id="gallery" class="section fade-on-view">
-      <article class="article-card">
-        <h2>Recent Projects</h2>
-        <div class="gallery">
-          <button class="arrow left" aria-label="Previous" id="galPrev">&#10094;</button>
-          <div class="viewport">
-            <ul class="track" id="galleryTrack"><!-- slides injected --></ul>
-          </div>
-          <button class="arrow right" aria-label="Next" id="galNext">&#10095;</button>
-        </div>
-      </article>
-    </section>
-
-    <footer class="section fade-on-view">
-      <div class="footer-inner">
-        <p>&copy; <span id="year"></span> Deepend Pool Solutions. All rights reserved.</p>
-      </div>
-    </footer>
-  </main>
-
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deepend Pool Solutions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="description" content="Deepend Pool Solutions — Replaster, Mastic, Coping, Tile, Decks, Water Features, Handrails/Fences, Turf, Inspections & Leak Detections.">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
