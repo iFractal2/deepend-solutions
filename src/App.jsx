@@ -135,6 +135,8 @@ export default function App() {
       {/* HERO */}
       <header className="hero fade-on-view">
         <img className="hero-img" src="/images/topimage.png" alt="Deep End Pool Solutions" />
+        <div className="hero-subtitle">Serving the Dallas/Fort Worth Market</div>
+
         {/* Yellow strip with cyan heading (no white stroke) */}
         <div className="hero-strip">
           <div className="container">
@@ -665,6 +667,14 @@ body{
   margin-top: 6px;
   color:#2f4750;
   font-size: clamp(14px, 2vw, 16px);
+}
+.hero-subtitle {
+  text-align: center;
+  margin-top: 12px;
+  margin-bottom: 16px;
+  font-size: clamp(18px, 2.8vw, 24px);
+  font-weight: 600;
+  color: #067796;
 }
 
 /* Reduced motion */
