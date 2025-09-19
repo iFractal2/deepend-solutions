@@ -305,8 +305,11 @@ function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
 /* -------- Additional Resources component -------- */
 function AdditionalResources() {
   const [img, setImg] = useState(null);
+  const [splash, setSplash] = useState(null); // backdrop behind the paragraphs
+
   useEffect(() => {
     setImg(firstSlideFor("storefront"));
+    setSplash(firstSlideFor("splash"));
   }, []);
 
   return (
@@ -320,32 +323,39 @@ function AdditionalResources() {
             <div className="img-placeholder">Storefront image</div>
           )}
         </div>
-        <div className="resources-text">
-          <div className="resource-item">
-            <h4>Repair</h4>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for now.</p>
-          </div>
-          <div className="resource-item">
-            <h4>Retail</h4>
-            <p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Placeholder copy for now.</p>
-          </div>
-          <div className="resource-item">
-            <h4>Maintenance</h4>
-            <p>Vivamus suscipit tortor eget felis porttitor volutpat. Placeholder copy for now.</p>
-          </div>
 
-          <p className="resources-cta">
-            For more information regarding your Retail/Repair/Maintenance needs<br />
-            <a
-              className="resources-cta-link"
-              href="https://www.poolwerx.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Click here for more information regarding Retail, Repair, and Maintenance"
-            >
-              Click here!
-            </a>
-          </p>
+        {/* Right column with splash backdrop */}
+        <div
+          className={`resources-text ${splash ? "resources-text--with-splash" : ""}`}
+          style={splash ? { backgroundImage: `url(${splash})` } : undefined}
+        >
+          <div className="resources-text__inner">
+            <div className="resource-item">
+              <h4>Repair</h4>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for now.</p>
+            </div>
+            <div className="resource-item">
+              <h4>Retail</h4>
+              <p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Placeholder copy for now.</p>
+            </div>
+            <div className="resource-item">
+              <h4>Maintenance</h4>
+              <p>Vivamus suscipit tortor eget felis porttitor volutpat. Placeholder copy for now.</p>
+            </div>
+
+            <p className="resources-cta">
+              For more information regarding your Retail/Repair/Maintenance needs<br />
+              <a
+                className="resources-cta-link"
+                href="https://www.poolwerx.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Click here for more information regarding Retail, Repair, and Maintenance"
+              >
+                Click here!
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -463,7 +473,7 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
                 ))}
               </ul>
               <button className="nav prev" aria-label="Previous" onClick={() => setIdx((i) => (i - 1 + slides.length) % slides.length)}>&#10094;</button>
-              <button className="nav next" aria-label="Next" onClick={() => setIdx((i) => (i + 1) % slides.length)}>&#10095;</button>
+              <button className="nav next" aria-label="Next" onClick={() => setIdx={(i) => (i + 1) % slides.length)}>&#10095;</button>
             </div>
           ) : (
             <div className="slider" style={{ display: "grid", placeItems: "center", padding: 16 }}>
@@ -780,8 +790,8 @@ body{
 .resources-grid{
   display:grid;
   grid-template-columns: 1.2fr 1fr;   /* big image on the left */
-  gap: clamp(20px, 3vw, 32px);        /* MORE space between image and text */
-  align-items: start;
+  gap: clamp(20px, 3vw, 32px);        /* space between image and text */
+  align-items: stretch;
 }
 @media (max-width: 920px){
   .resources-grid{ grid-template-columns: 1fr; }
@@ -803,9 +813,32 @@ body{
   display:grid; place-items:center;
   color:#4a5b6a; background:#eef3f8; border-radius:8px;
 }
+
+/* Splash backdrop on right column */
 .resources-text{
-  display:block;
+  position: relative;
+  border: 1px solid rgba(15,39,50,.12);
+  border-radius: 10px;
+  overflow: hidden;
   text-align: center; /* center all text in the right column */
+  min-height: 100%;   /* ensure backdrop stretches with content */
+}
+.resources-text--with-splash{
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.resources-text::before{
+  /* optional soft scrim for text readability */
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.88));
+  pointer-events: none;
+}
+.resources-text__inner{
+  position: relative;
+  z-index: 1;
+  padding: clamp(16px, 2.5vw, 22px);
 }
 .resources-text .resource-item + .resource-item{
   margin-top: clamp(12px, 2vw, 16px);
