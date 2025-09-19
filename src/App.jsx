@@ -15,12 +15,13 @@ const imageMap = Object.entries(imageModules).reduce((acc, [path, url]) => {
   return acc;
 }, {});
 
+// Helper: extract trailing _### before extension
+function extractNum(u) {
+  const m = u.match(/_(\d+)(?:\.[a-z]+)?$/i);
+  return m ? parseInt(m[1], 10) : 0;
+}
 for (const k in imageMap) {
-  imageMap[k].sort((a, b) => {
-    const na = (a.match(/_(\d+)\./)?.[1] ?? "0") | 0;
-    const nb = (b.match(/_(\d+)\./)?.[1] ?? "0") | 0;
-    return na - nb;
-  });
+  imageMap[k].sort((a, b) => extractNum(a) - extractNum(b));
 }
 
 function slidesFor(prefix) {
@@ -49,7 +50,7 @@ export default function App() {
     { key: "features", title: "Water Features", prefix: "waterfeatures" },
     { key: "rails", title: "Handrails / Fences", prefix: "rails" },
     { key: "turf", title: "Turf", prefix: "turf" },
-    { key: "covers", title: "Pool Covers", prefix: "covers" }, // renamed
+    { key: "covers", title: "Pool Covers", prefix: "covers" },
   ];
 
   // Palette-inspired themes for cards (gradient colors)
@@ -74,9 +75,9 @@ export default function App() {
       rails:
         "We provide core-drilled stainless steel rails and safety fencing to enhance both accessibility and protection around your pool. Every installation uses heavy-duty epoxy anchors and precise, code-compliant placement, ensuring safe, secure, and elegant access that lasts for years.",
       turf:
-        "We install premium low-maintenance turf systems that transform the space around your pool into a clean, green, and usable surface all year long. Every installation is built on a proper drainage base to prevent standing water and maintain long-term performance. For comfort, we offer cool-touch turf options that stay softer and cooler under the sun, even on the hottest days. To ensure a polished look, we finish with precise edging and resilient seams that hold up against foot traffic, weather, and poolside activity. This creates a smooth, natural appearance that blends seamlessly with your pool deck. Durable, attractive, and practical, our turf systems are the perfect finishing touch for a backyard designed to be enjoyed without the hassle of constant upkeep.",
+        "We install premium low-maintenance turf systems that transform the space around your pool into a clean, green, and usable surface all year long. Every installation is built on a proper drainage base to prevent standing water and maintain long-term performance. For comfort, we offer cool-touch turf options that stay softer and cooler under the sun, even on the hottest days. To ensure a polished look, we finish with precise edging and resilient seams that hold up against foot traffic, weather, and poolside activity.",
       covers:
-        "We offer both automatic and manual pool covers custom-sized to fit your pool perfectly. Covers not only keep debris out but also provide measurable energy savings by reducing heat loss and evaporation. Our systems are built with safety-first hardware to give you peace of mind while protecting your investment. In addition to new installations, we service and maintain all components, including tracks, reels, and fabrics, ensuring smooth operation and long-lasting performance. Whether you’re looking for convenience, safety, or efficiency, a properly fitted pool cover is an essential upgrade for any pool.",
+        "We offer both automatic and manual pool covers custom-sized to fit your pool perfectly. Covers not only keep debris out but also provide measurable energy savings by reducing heat loss and evaporation. Our systems are built with safety-first hardware to give you peace of mind while protecting your investment.",
     }),
     []
   );
@@ -186,19 +187,19 @@ export default function App() {
             ))}
           </div>
 
-          {expandedKey && (
-            <ExpandedFLIP
-              service={services.find((x) => x.key === expandedKey)}
-              theme={themes[expandedKey]}
-              summary={summaries[expandedKey]}
-              fromRect={fromRect}
-              onClose={handleClose}
-            />
-          )}
+        {expandedKey && (
+          <ExpandedFLIP
+            service={services.find((x) => x.key === expandedKey)}
+            theme={themes[expandedKey]}
+            summary={summaries[expandedKey]}
+            fromRect={fromRect}
+            onClose={handleClose}
+          />
+        )}
         </div>
       </section>
 
-      {/* NEW: Divider ABOVE Additional Resources */}
+      {/* Divider ABOVE Additional Resources */}
       <div className="section-divider" role="separator" aria-hidden="true"></div>
 
       {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
@@ -276,7 +277,7 @@ function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
               height: "100%",
               objectFit: "cover",
               position: "absolute",
-              inset: 0,
+              top: 0, left: 0, right: 0, bottom: 0,
               zIndex: 0,
             }}
             onError={(e) => { e.currentTarget.style.display = "none"; }}
@@ -377,9 +378,10 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
   useEffect(() => {
     if (!slides.length) return;
     rotRef.current = setInterval(() => setIdx((i) => (i + 1) % slides.length), 3500);
-    return () => clearInterval(rotRef.current);
+    return () => { if (rotRef.current) clearInterval(rotRef.current); };
   }, [slides]);
 
+  // FLIP animation using WAAPI
   useLayoutEffect(() => {
     const node = wrapRef.current;
     if (!node || !fromRect) return;
@@ -392,7 +394,8 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     const dx = from.x - to.x;
     const dy = from.y - to.y;
 
-    const canAnimate = "animate" in node && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canAnimate = "animate" in node && !prefersReduce;
 
     if (canAnimate) {
       node.animate(
@@ -428,7 +431,8 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     const dx = from.x - to.x;
     const dy = from.y - to.y;
 
-    const canAnimate = "animate" in node && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canAnimate = "animate" in node && !prefersReduce;
 
     if (canAnimate) {
       node.animate(
@@ -629,15 +633,15 @@ body{
 .section{ position:relative; padding: clamp(22px, 5vw, 56px) 0 }
 
 /* Section video bg */
-.section--video{ overflow:clip }
-.video-bg{ position:absolute; inset:0; z-index:0 }
+.section--video{ overflow:hidden }
+.video-bg{ position:absolute; top:0; left:0; right:0; bottom:0; z-index:0 }
 .video-bg__media{
-  position:absolute; inset:0;
+  position:absolute; top:0; left:0; right:0; bottom:0;
   width:100%; height:100%; object-fit:cover;
   filter: brightness(.95) saturate(1.05);
 }
 .video-bg__scrim{
-  position:absolute; inset:0;
+  position:absolute; top:0; left:0; right:0; bottom:0;
   background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.88) 60%, rgba(255,255,255,1));
 }
 .section--video > .container{ position:relative; z-index:1 }
@@ -675,7 +679,7 @@ body{
 
 /* ----------- FLIP Overlay ----------- */
 .expanded-overlay{
-  position: fixed; inset: 0;
+  position: fixed; top:0; left:0; right:0; bottom:0;
   display: grid; align-items: start; justify-items: center;
   padding: clamp(10px, 4vh, 24px) 12px;
   background: rgba(0,0,0,.28);
@@ -688,7 +692,7 @@ body{
   border: 1px solid var(--expanded-border);
   border-radius: 12px;
   box-shadow: var(--expanded-shadow);
-  overflow: clip; position: relative; will-change: transform, opacity;
+  overflow: hidden; position: relative; will-change: transform, opacity;
   pointer-events: auto;
 }
 @media (max-width: 560px){
@@ -779,7 +783,6 @@ body{
 
 /* -------- Additional Resources styles -------- */
 .section--resources{ padding-top: clamp(28px, 6vw, 64px); padding-bottom: clamp(28px, 6vw, 64px); }
-.resources{ }
 .resources-title{
   text-align:center;
   color:#0f2732;
@@ -821,7 +824,7 @@ body{
   border-radius: 10px;
   overflow: hidden;
   text-align: center; /* center all text in the right column */
-  min-height: 100%;   /* ensure backdrop stretches with content */
+  min-height: 100%;
 }
 .resources-text--with-splash{
   background-size: cover;
@@ -829,9 +832,9 @@ body{
   background-repeat: no-repeat;
 }
 .resources-text::before{
-  /* optional soft scrim for text readability */
+  /* soft scrim for text readability */
   content: "";
-  position: absolute; inset: 0;
+  position: absolute; top:0; left:0; right:0; bottom:0;
   background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.88));
   pointer-events: none;
 }
@@ -857,13 +860,13 @@ body{
   margin-top: clamp(18px, 3vw, 26px);
   color:#0f2732;
   font-weight: 700;
-  text-align: center;                 /* centered */
-  font-size: clamp(16px, 2.4vw, 20px);/* slightly larger */
+  text-align: center;
+  font-size: clamp(16px, 2.4vw, 20px);
 }
 .resources-cta-link{
-  color: #0b63c8;              /* blue */
-  text-decoration: underline;  /* underlined */
-  font-style: italic;          /* italics */
+  color: #0b63c8;
+  text-decoration: underline;
+  font-style: italic;
   font-weight: 700;
 }
 
