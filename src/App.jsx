@@ -892,7 +892,7 @@ body{
 .resources-text::before{
   content: "";
   position: absolute; top:0; left:0; right:0; bottom:0;
-  background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(255,255,255,.58));
+  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
   pointer-events: none;
 }
 .resources-text__inner{
