@@ -7,9 +7,12 @@ const imageModules = import.meta.glob(
 );
 
 // Build prefix -> [urls] (sorted by numeric suffix)
+// Prefix = base filename without extension, trimmed at first underscore.
+// This makes "storefront.jpg" map to "storefront" and "remodel_1.jpg" map to "remodel".
 const imageMap = Object.entries(imageModules).reduce((acc, [path, url]) => {
   const file = path.split("/").pop() || "";
-  const prefix = file.split("_")[0].toLowerCase();
+  const base = file.replace(/\.[^.]+$/, ""); // strip extension
+  const prefix = (base.split("_")[0] || base).toLowerCase();
   (acc[prefix] ??= []).push(url);
   return acc;
 }, {});
@@ -137,10 +140,9 @@ export default function App() {
         <img className="hero-img" src="/images/topimage.png" alt="Deep End Pool Solutions" />
         <div className="hero-subtitle">Serving the Dallas/Fort Worth Market</div>
 
-        {/* Yellow strip with cyan heading (no white stroke) */}
+        {/* Yellow strip with financing line ABOVE the title */}
         <div className="hero-strip">
           <div className="container">
-            <div className="strip-title">Here’s what we do…</div>
             <div className="strip-subtitle">
               Financing possible through Lyon Financial<br />
               <a
@@ -152,6 +154,7 @@ export default function App() {
                 Apply today!
               </a>
             </div>
+            <div className="strip-title">Here’s what we do…</div>
           </div>
         </div>
       </header>
@@ -197,7 +200,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTACT — plain centered lines, no card */}
+      {/* CONTACT — plain centered lines, plus "Additional Resources" */}
       <section className="contact-section fade-on-view" id="contact">
         <div className="container">
           <h2 className="contact-title">Contact us</h2>
@@ -218,9 +221,12 @@ export default function App() {
             </div>
 
             <p className="contact-note">
-              Concact us with your inquiry and we'll help you on your project journey!
+              Contact us with your inquiry and we'll help you on your project journey!
             </p>
           </div>
+
+          {/* NEW: Additional Resources block */}
+          <AdditionalResources />
         </div>
       </section>
     </div>
@@ -286,6 +292,43 @@ function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
         {data.title}
       </div>
     </a>
+  );
+}
+
+/* -------- Additional Resources component -------- */
+function AdditionalResources() {
+  const [img, setImg] = useState(null);
+  useEffect(() => {
+    setImg(firstSlideFor("storefront"));
+  }, []);
+
+  return (
+    <div className="resources">
+      <h3 className="resources-title">Additional Resources</h3>
+      <div className="resources-grid">
+        <div className="resources-image">
+          {img ? (
+            <img src={img} alt="Storefront" />
+          ) : (
+            <div className="img-placeholder">Storefront image</div>
+          )}
+        </div>
+        <div className="resources-text">
+          <div className="resource-item">
+            <h4>Repair</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for now.</p>
+          </div>
+          <div className="resource-item">
+            <h4>Retail</h4>
+            <p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Placeholder copy for now.</p>
+          </div>
+          <div className="resource-item">
+            <h4>Maintenance</h4>
+            <p>Vivamus suscipit tortor eget felis porttitor volutpat. Placeholder copy for now.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -472,16 +515,16 @@ body{
   border-bottom: 1px solid rgba(255,255,255,.08);
 }
 .topbar__inner{
-  position: relative;              /* so the button can be absolutely positioned */
+  position: relative;
   padding: 6px 0;
   min-height: 36px;
 }
 .topbar__text{
   width: 100%;
-  text-align: center;              /* centered across the full bar */
+  text-align: center;
   font-weight: 600;
   line-height: 1.2;
-  padding: 6px 80px 6px 80px;      /* ensure centered text never sits under the button */
+  padding: 6px 80px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -506,7 +549,7 @@ body{
   color: #fff;
 }
 @media (max-width: 560px){
-  .topbar__inner{ padding: 8px 0 44px; }      /* space for the button below */
+  .topbar__inner{ padding: 8px 0 44px; }
   .topbar__text{ padding: 6px 10px; }
   .topbar__btn{
     position: absolute;
@@ -520,21 +563,19 @@ body{
 .hero{ margin:0; padding:20px 0 0; background: var(--hero-bg); text-align:center }
 .hero-img{ width:100%; max-width: var(--hero-max-w); height:auto; display:inline-block; margin:0 auto }
 
-/* Yellow strip with cyan heading (no white stroke) */
+/* Yellow strip with financing line ABOVE the title */
 .hero-strip{
   position: relative;
-  /* Previously fixed height; allow content to grow with two lines */
   background: var(--strip);
   border-top:4px solid var(--strip-border);
 }
-/* Stack title + subtitle neatly centered */
 .hero-strip > .container{
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding: 8px 20px 12px;
-  gap: 2px;
+  padding: 10px 20px 12px;
+  gap: 6px;
 }
 .strip-title{
   font-size: clamp(18px, 2.6vw, 22px);
@@ -699,6 +740,60 @@ body{
   color:#2f4750;
   font-size: clamp(14px, 2vw, 16px);
 }
+
+/* -------- Additional Resources styles -------- */
+.resources{ margin-top: clamp(24px, 4vw, 40px); }
+.resources-title{
+  text-align:center;
+  color:#0f2732;
+  font-size: clamp(20px, 2.8vw, 26px);
+  margin: 0 0 14px;
+  font-weight: 800;
+}
+.resources-grid{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr;   /* big image on the left */
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 920px){
+  .resources-grid{ grid-template-columns: 1fr; }
+}
+.resources-image{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: #f6f7fa;
+  border: 1px dashed rgba(15,39,50,.25);
+  border-radius: 10px;
+  padding: 10px;
+}
+.resources-image img{
+  width:100%; height:auto; max-width: 720px; display:block; border-radius: 8px;
+}
+.img-placeholder{
+  width:100%; aspect-ratio: 16/9;
+  display:grid; place-items:center;
+  color:#4a5b6a; background:#eef3f8; border-radius:8px;
+}
+.resources-text{
+  display:block;
+}
+.resources-text .resource-item + .resource-item{
+  margin-top: 12px;
+}
+.resource-item h4{
+  margin: 0 0 6px;
+  font-size: clamp(16px, 2.2vw, 20px);
+  color:#0f2732;
+}
+.resource-item p{
+  margin: 0;
+  line-height: 1.55;
+  color:#2f4750;
+}
+
+/* Hero subtitle color & spacing */
 .hero-subtitle {
   text-align: center;
   margin-top: 12px;
