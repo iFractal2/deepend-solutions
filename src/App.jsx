@@ -202,12 +202,28 @@ export default function App() {
       {/* Divider ABOVE Additional Resources */}
       <div className="section-divider" role="separator" aria-hidden="true"></div>
 
-      {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
-      <section className="section section--resources fade-on-view" id="resources">
-        <div className="container">
-          <AdditionalResources />
-        </div>
-      </section>
+     {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
+<section className="section section--resources fade-on-view" id="resources">
+  {/* Background video */}
+  <div className="resources-video-bg" aria-hidden="true">
+    <video
+      className="resources-video-bg__media"
+      src="/videos/bubbles.mp4"
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+    />
+    <div className="resources-video-bg__scrim" />
+  </div>
+
+  {/* Foreground content */}
+  <div className="container">
+    <AdditionalResources />
+  </div>
+</section>
+
 
       {/* Divider between resources and contact */}
       <div className="section-divider" role="separator" aria-hidden="true"></div>
@@ -783,6 +799,45 @@ body{
 }
 
 /* -------- Additional Resources styles -------- */
+/* Resources section video background */
+.section--resources{
+  position: relative;
+  overflow: hidden; /* clip video edges like the hero section */
+}
+
+.resources-video-bg{
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* behind content */
+}
+
+.resources-video-bg__media{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(1) saturate(1.05);
+}
+
+.resources-video-bg__scrim{
+  position: absolute;
+  inset: 0;
+  /* soft white scrim so text stays readable on top of video */
+  background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.92));
+}
+
+/* Keep the actual content above the video */
+.section--resources > .container{
+  position: relative;
+  z-index: 1;
+}
+
+/* Accessibility: respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .resources-video-bg__media{ display: none; }
+}
+
 .section--resources{ padding-top: clamp(28px, 6vw, 64px); padding-bottom: clamp(28px, 6vw, 64px); }
 .resources-title{
   text-align:center;
