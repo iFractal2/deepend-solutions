@@ -7,11 +7,9 @@ const imageModules = import.meta.glob(
 );
 
 // Build prefix -> [urls] (sorted by numeric suffix)
-// Prefix = base filename without extension, trimmed at first underscore.
-// This makes "storefront.jpg" map to "storefront" and "remodel_1.jpg" map to "remodel".
 const imageMap = Object.entries(imageModules).reduce((acc, [path, url]) => {
   const file = path.split("/").pop() || "";
-  const base = file.replace(/\.[^.]+$/, ""); // strip extension
+  const base = file.replace(/\.[^.]+$/, "");
   const prefix = (base.split("_")[0] || base).toLowerCase();
   (acc[prefix] ??= []).push(url);
   return acc;
@@ -200,7 +198,17 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTACT — plain centered lines, plus "Additional Resources" */}
+      {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
+      <section className="section section--resources fade-on-view" id="resources">
+        <div className="container">
+          <AdditionalResources />
+        </div>
+      </section>
+
+      {/* Divider between resources and contact */}
+      <div className="section-divider" role="separator" aria-hidden="true"></div>
+
+      {/* CONTACT — plain centered lines */}
       <section className="contact-section fade-on-view" id="contact">
         <div className="container">
           <h2 className="contact-title">Contact us</h2>
@@ -224,9 +232,6 @@ export default function App() {
               Contact us with your inquiry and we'll help you on your project journey!
             </p>
           </div>
-
-          {/* NEW: Additional Resources block */}
-          <AdditionalResources />
         </div>
       </section>
     </div>
@@ -326,6 +331,19 @@ function AdditionalResources() {
             <h4>Maintenance</h4>
             <p>Vivamus suscipit tortor eget felis porttitor volutpat. Placeholder copy for now.</p>
           </div>
+
+          <p className="resources-cta">
+            For more information regarding your Retail/Repair/Maintenance needs<br />
+            <a
+              className="resources-cta-link"
+              href="https://www.poolwerx.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Click here for more information regarding Retail, Repair, and Maintenance"
+            >
+              Click here!
+            </a>
+          </p>
         </div>
       </div>
     </div>
@@ -584,7 +602,7 @@ body{
 }
 .strip-subtitle{
   text-align:center;
-  font-size: clamp(14px, 2.2vw, 18px); /* slightly smaller than title */
+  font-size: clamp(14px, 2.2vw, 18px);
   font-weight: 600;
   color: #0f2732;
   line-height: 1.2;
@@ -612,6 +630,13 @@ body{
   background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.88) 60%, rgba(255,255,255,1));
 }
 .section--video > .container{ position:relative; z-index:1 }
+
+/* Divider */
+.section-divider{
+  border-top: 2px solid rgba(0,0,0,.12);
+  max-width: var(--container);
+  margin: 0 auto;
+}
 
 /* Fade-in */
 .fade-on-view{ opacity:0; transform:translateY(8px); transition: opacity .45s ease, transform .45s ease }
@@ -742,18 +767,19 @@ body{
 }
 
 /* -------- Additional Resources styles -------- */
-.resources{ margin-top: clamp(24px, 4vw, 40px); }
+.section--resources{ padding-top: clamp(28px, 6vw, 64px); padding-bottom: clamp(28px, 6vw, 64px); }
+.resources{ }
 .resources-title{
   text-align:center;
   color:#0f2732;
   font-size: clamp(20px, 2.8vw, 26px);
-  margin: 0 0 14px;
+  margin: 0 0 18px;
   font-weight: 800;
 }
 .resources-grid{
   display:grid;
   grid-template-columns: 1.2fr 1fr;   /* big image on the left */
-  gap: 16px;
+  gap: clamp(20px, 3vw, 32px);        /* MORE space between image and text */
   align-items: start;
 }
 @media (max-width: 920px){
@@ -766,7 +792,7 @@ body{
   background: #f6f7fa;
   border: 1px dashed rgba(15,39,50,.25);
   border-radius: 10px;
-  padding: 10px;
+  padding: clamp(10px, 1.5vw, 16px);
 }
 .resources-image img{
   width:100%; height:auto; max-width: 720px; display:block; border-radius: 8px;
@@ -780,7 +806,7 @@ body{
   display:block;
 }
 .resources-text .resource-item + .resource-item{
-  margin-top: 12px;
+  margin-top: clamp(12px, 2vw, 16px);
 }
 .resource-item h4{
   margin: 0 0 6px;
@@ -791,6 +817,17 @@ body{
   margin: 0;
   line-height: 1.55;
   color:#2f4750;
+}
+.resources-cta{
+  margin-top: clamp(16px, 3vw, 22px);
+  color:#0f2732;
+  font-weight: 600;
+}
+.resources-cta-link{
+  color: #0b63c8;              /* blue */
+  text-decoration: underline;  /* underlined */
+  font-style: italic;          /* italics */
+  font-weight: 700;
 }
 
 /* Hero subtitle color & spacing */
