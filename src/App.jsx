@@ -141,6 +141,17 @@ export default function App() {
         <div className="hero-strip">
           <div className="container">
             <div className="strip-title">Here’s what we do…</div>
+            <div className="strip-subtitle">
+              Financing possible through Lyon Financial<br />
+              <a
+                href="https://www.lyonfinancial.net/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Apply today with Lyon Financial"
+              >
+                Apply today!
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -512,16 +523,36 @@ body{
 /* Yellow strip with cyan heading (no white stroke) */
 .hero-strip{
   position: relative;
-  height: 54px;
+  /* Previously fixed height; allow content to grow with two lines */
   background: var(--strip);
   border-top:4px solid var(--strip-border);
-  display:flex; align-items:center;
+}
+/* Stack title + subtitle neatly centered */
+.hero-strip > .container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding: 8px 20px 12px;
+  gap: 2px;
 }
 .strip-title{
   font-size: clamp(18px, 2.6vw, 22px);
   font-weight: 800;
   color: var(--cyan);
-  /* removed white stroke & white shadow */
+}
+.strip-subtitle{
+  text-align:center;
+  font-size: clamp(14px, 2.2vw, 18px); /* slightly smaller than title */
+  font-weight: 600;
+  color: #0f2732;
+  line-height: 1.2;
+}
+.strip-subtitle a{
+  color: #c1121f;             /* red */
+  text-decoration: underline; /* underline */
+  font-style: italic;         /* italics */
+  font-weight: 700;
 }
 
 /* Sections */
