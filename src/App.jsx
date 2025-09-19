@@ -821,7 +821,7 @@ body{
 /* Splash backdrop on right column */
 .resources-text{
   position: relative;
-  border: 1px solid rgba(15,39,50,.12);
+  
   border-radius: 10px;
   overflow: hidden;
   text-align: center;
