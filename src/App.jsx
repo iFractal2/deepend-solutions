@@ -835,13 +835,13 @@ body{
 .resources-text::before{
   content: "";
   position: absolute; top:0; left:0; right:0; bottom:0;
-  background: linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.68));
+  background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(255,255,255,.58));
   pointer-events: none;
 }
 .resources-text__inner{
   position: relative;
   z-index: 1;
-  padding: clamp(40px, 5vw, 60px);
+  padding: clamp(16px, 2.5vw, 22px);
 }
 .resources-text .resource-item + .resource-item{
   margin-top: clamp(12px, 2vw, 16px);
