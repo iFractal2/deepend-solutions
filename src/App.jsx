@@ -664,11 +664,13 @@ body{
 .section--video > .container{ position:relative; z-index:1 }
 
 /* Divider */
+/* Divider */
 .section-divider{
-  border-top: 2px solid rgba(0,0,0,.12);
-  max-width: var(--container);
-  margin: 0 auto;
+  border-top: 4px solid #0b63c8;  /* solid blue line */
+  width: 100%;                   /* stretch across full screen */
+  margin: 0;                     /* no side margins */
 }
+
 
 /* Fade-in */
 .fade-on-view{ opacity:0; transform:translateY(8px); transition: opacity .45s ease, transform .45s ease }
