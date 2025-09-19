@@ -349,15 +349,15 @@ function AdditionalResources() {
           <div className="resources-text__inner">
             <div className="resource-item">
               <h4>Repair</h4>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placeholder copy for now.</p>
+              <p>Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment — from pumps, filters, and heaters to automation systems and more. Whether it’s a small fix or a major breakdown, we’ll diagnose the issue quickly and get your pool running smoothly again so you can enjoy a hassle-free swim season.</p>
             </div>
             <div className="resource-item">
               <h4>Retail</h4>
-              <p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Placeholder copy for now.</p>
+              <p>If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products to keep your pool crystal clear, safe, and fun. We offer free water testing every day, so you’ll always know exactly what your pool needs. From essential maintenance supplies and replacement parts to floats, games, and accessories, we carry everything you need — all backed by expert advice to help you choose the right products for your pool. Visit us at any of our four convenient locations in North Richland Hills, Roanoke, Lantana, or Flower Mound to experience the difference in person.</p>
             </div>
             <div className="resource-item">
               <h4>Maintenance</h4>
-              <p>Vivamus suscipit tortor eget felis porttitor volutpat. Placeholder copy for now.</p>
+              <p>Keeping your pool healthy and inviting takes consistent care, and that’s where our maintenance team shines. From routine cleanings to full green-to-clean treatments, we make sure your pool is always ready to enjoy. Our technicians handle brushing, skimming, vacuuming, chemical balancing, and filter care with precision, so you don’t have to. Whether you need a one-time deep clean or ongoing upkeep, we’ve got the perfect plan for you — just ask us about our weekly service options! With our flexible scheduling and reliable team, you can relax knowing your pool will always look its best.</p>
             </div>
 
             <p className="resources-cta">
