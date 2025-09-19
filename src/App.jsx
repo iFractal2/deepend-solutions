@@ -202,28 +202,27 @@ export default function App() {
       {/* Divider ABOVE Additional Resources */}
       <div className="section-divider" role="separator" aria-hidden="true"></div>
 
-     {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
-<section className="section section--resources fade-on-view" id="resources">
-  {/* Background video */}
-  <div className="resources-video-bg" aria-hidden="true">
-    <video
-      className="resources-video-bg__media"
-      src="/videos/bubbles.mp4"
-      autoPlay
-      loop
-      muted
-      playsInline
-      preload="auto"
-    />
-    <div className="resources-video-bg__scrim" />
-  </div>
+      {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
+      <section className="section section--resources fade-on-view" id="resources">
+        {/* Background video */}
+        <div className="resources-video-bg" aria-hidden="true">
+          <video
+            className="resources-video-bg__media"
+            src="/videos/bubbles.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+          />
+          <div className="resources-video-bg__scrim" />
+        </div>
 
-  {/* Foreground content */}
-  <div className="container">
-    <AdditionalResources />
-  </div>
-</section>
-
+        {/* Foreground content */}
+        <div className="container">
+          <AdditionalResources />
+        </div>
+      </section>
 
       {/* Divider between resources and contact */}
       <div className="section-divider" role="separator" aria-hidden="true"></div>
@@ -319,45 +318,35 @@ function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
   );
 }
 
-/* -------- Additional Resources component -------- */
+/* -------- Additional Resources component (NO images) -------- */
 function AdditionalResources() {
-  const [img, setImg] = useState(null);
-  const [splash, setSplash] = useState(null); // backdrop behind the paragraphs
-
-  useEffect(() => {
-    setImg(firstSlideFor("storefront"));
-    setSplash(firstSlideFor("splash"));
-  }, []);
-
   return (
     <div className="resources">
       <h3 className="resources-title">Additional Resources</h3>
-      <div className="resources-grid">
-        <div className="resources-image">
-          {img ? (
-            <img src={img} alt="Storefront" />
-          ) : (
-            <div className="img-placeholder">Storefront image</div>
-          )}
-        </div>
 
-        {/* Right column with splash backdrop */}
-        <div
-          className={`resources-text ${splash ? "resources-text--with-splash" : ""}`}
-          style={splash ? { backgroundImage: `url(${splash})` } : undefined}
-        >
+      {/* Single-column layout with text only */}
+      <div className="resources-grid resources-grid--text-only">
+        <div className="resources-text">
           <div className="resources-text__inner">
             <div className="resource-item">
               <h4>Repair</h4>
-              <p>Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment — from pumps, filters, and heaters to automation systems and more. Whether it’s a small fix or a major breakdown, we’ll diagnose the issue quickly and get your pool running smoothly again so you can enjoy a hassle-free swim season.</p>
+              <p>
+                Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment — from pumps, filters, and heaters to automation systems and more. Whether it’s a small fix or a major breakdown, we’ll diagnose the issue quickly and get your pool running smoothly again so you can enjoy a hassle-free swim season.
+              </p>
             </div>
+
             <div className="resource-item">
               <h4>Retail</h4>
-              <p>If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products to keep your pool crystal clear, safe, and fun. We offer free water testing every day, so you’ll always know exactly what your pool needs. From essential maintenance supplies and replacement parts to floats, games, and accessories, we carry everything you need — all backed by expert advice to help you choose the right products for your pool. Visit us at any of our four convenient locations in North Richland Hills, Roanoke, Lantana, or Flower Mound to experience the difference in person.</p>
+              <p>
+                If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products to keep your pool crystal clear, safe, and fun. We offer free water testing every day, so you’ll always know exactly what your pool needs. From essential maintenance supplies and replacement parts to floats, games, and accessories, we carry everything you need — all backed by expert advice to help you choose the right products for your pool. Visit us at any of our four convenient locations in North Richland Hills, Roanoke, Lantana, or Flower Mound to experience the difference in person.
+              </p>
             </div>
+
             <div className="resource-item">
               <h4>Maintenance</h4>
-              <p>Keeping your pool healthy and inviting takes consistent care, and that’s where our maintenance team shines. From routine cleanings to full green-to-clean treatments, we make sure your pool is always ready to enjoy. Our technicians handle brushing, skimming, vacuuming, chemical balancing, and filter care with precision, so you don’t have to. Whether you need a one-time deep clean or ongoing upkeep, we’ve got the perfect plan for you — just ask us about our weekly service options! With our flexible scheduling and reliable team, you can relax knowing your pool will always look its best.</p>
+              <p>
+                Keeping your pool healthy and inviting takes consistent care, and that’s where our maintenance team shines. From routine cleanings to full green-to-clean treatments, we make sure your pool is always ready to enjoy. Our technicians handle brushing, skimming, vacuuming, chemical balancing, and filter care with precision, so you don’t have to. Whether you need a one-time deep clean or ongoing upkeep, we’ve got the perfect plan for you — just ask us about our weekly service options! With our flexible scheduling and reliable team, you can relax knowing your pool will always look its best.
+              </p>
             </div>
 
             <p className="resources-cta">
@@ -664,13 +653,11 @@ body{
 .section--video > .container{ position:relative; z-index:1 }
 
 /* Divider */
-/* Divider */
 .section-divider{
   border-top: 4px solid #0b63c8;  /* solid blue line */
-  width: 100%;                   /* stretch across full screen */
-  margin: 0;                     /* no side margins */
+  width: 100%;
+  margin: 0;
 }
-
 
 /* Fade-in */
 .fade-on-view{ opacity:0; transform:translateY(8px); transition: opacity .45s ease, transform .45s ease }
@@ -827,11 +814,10 @@ body{
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(255,255,255,.25),   /* lighter top fade */
-    rgba(255,255,255,.45)    /* lighter bottom fade */
+    rgba(255,255,255,.25),
+    rgba(255,255,255,.45)
   );
 }
-
 
 /* Keep the actual content above the video */
 .section--resources > .container{
@@ -844,6 +830,7 @@ body{
   .resources-video-bg__media{ display: none; }
 }
 
+/* TEXT-ONLY layout */
 .section--resources{ padding-top: clamp(28px, 6vw, 64px); padding-bottom: clamp(28px, 6vw, 64px); }
 .resources-title{
   text-align:center;
@@ -852,50 +839,29 @@ body{
   margin: 0 0 18px;
   font-weight: 800;
 }
+
+/* Single column, centered */
 .resources-grid{
   display:grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1fr;
   gap: clamp(20px, 3vw, 32px);
   align-items: stretch;
+  justify-items: center;
 }
-@media (max-width: 920px){
-  .resources-grid{ grid-template-columns: 1fr; }
-}
-.resources-image{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(44, 139, 218, 0.58));
-  padding: clamp(10px, 1.5vw, 16px);
-}
-.resources-image img{
-  width:100%; height:auto; max-width: 720px; display:block; border-radius: 8px;
-}
-.img-placeholder{
-  width:100%; aspect-ratio: 16/9;
-  display:grid; place-items:center;
-  color:#4a5b6a; background:#eef3f8; border-radius:8px;
+.resources-grid--text-only .resources-text{
+  width: 100%;
+  max-width: 900px; /* keep paragraphs readable */
 }
 
-/* Splash backdrop on right column */
+/* Removed: image column & splash background */
 .resources-text{
   position: relative;
-  
   border-radius: 10px;
   overflow: hidden;
   text-align: center;
   min-height: 100%;
-}
-.resources-text--with-splash{
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.resources-text::before{
-  content: "";
-  position: absolute; top:0; left:0; right:0; bottom:0;
-  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
-  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(44, 139, 218, 0.12));
+  border: 1px solid rgba(0,0,0,.06);
 }
 .resources-text__inner{
   position: relative;
