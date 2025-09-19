@@ -862,8 +862,6 @@ body{
   align-items:center;
   justify-content:center;
   background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(44, 139, 218, 0.58));
-  border: 1px dashed rgba(15,39,50,.25);
-  border-radius: 10px;
   padding: clamp(10px, 1.5vw, 16px);
 }
 .resources-image img{
