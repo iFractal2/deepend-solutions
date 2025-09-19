@@ -198,6 +198,9 @@ export default function App() {
         </div>
       </section>
 
+      {/* NEW: Divider ABOVE Additional Resources */}
+      <div className="section-divider" role="separator" aria-hidden="true"></div>
+
       {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
       <section className="section section--resources fade-on-view" id="resources">
         <div className="container">
@@ -242,7 +245,6 @@ export default function App() {
 function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
   const [preview, setPreview] = useState(null);
 
-  // Load per-card preview instantly from the build-time map (no network probing)
   useEffect(() => {
     setPreview(firstSlideFor(data.prefix || data.key));
   }, [data.prefix, data.key]);
@@ -368,7 +370,6 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     return () => clearInterval(rotRef.current);
   }, [slides]);
 
-  // FLIP animation using WAAPI
   useLayoutEffect(() => {
     const node = wrapRef.current;
     if (!node || !fromRect) return;
@@ -804,6 +805,7 @@ body{
 }
 .resources-text{
   display:block;
+  text-align: center; /* center all text in the right column */
 }
 .resources-text .resource-item + .resource-item{
   margin-top: clamp(12px, 2vw, 16px);
@@ -819,9 +821,11 @@ body{
   color:#2f4750;
 }
 .resources-cta{
-  margin-top: clamp(16px, 3vw, 22px);
+  margin-top: clamp(18px, 3vw, 26px);
   color:#0f2732;
-  font-weight: 600;
+  font-weight: 700;
+  text-align: center;                 /* centered */
+  font-size: clamp(16px, 2.4vw, 20px);/* slightly larger */
 }
 .resources-cta-link{
   color: #0b63c8;              /* blue */
