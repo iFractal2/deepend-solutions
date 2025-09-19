@@ -187,15 +187,15 @@ export default function App() {
             ))}
           </div>
 
-        {expandedKey && (
-          <ExpandedFLIP
-            service={services.find((x) => x.key === expandedKey)}
-            theme={themes[expandedKey]}
-            summary={summaries[expandedKey]}
-            fromRect={fromRect}
-            onClose={handleClose}
-          />
-        )}
+          {expandedKey && (
+            <ExpandedFLIP
+              service={services.find((x) => x.key === expandedKey)}
+              theme={themes[expandedKey]}
+              summary={summaries[expandedKey]}
+              fromRect={fromRect}
+              onClose={handleClose}
+            />
+          )}
         </div>
       </section>
 
@@ -477,7 +477,8 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
                 ))}
               </ul>
               <button className="nav prev" aria-label="Previous" onClick={() => setIdx((i) => (i - 1 + slides.length) % slides.length)}>&#10094;</button>
-              <button className="nav next" aria-label="Next" onClick={() => setIdx={(i) => (i + 1) % slides.length)}>&#10095;</button>
+              {/* FIXED LINE BELOW — complete HTML entity and valid arrow */}
+              <button className="nav next" aria-label="Next" onClick={() => setIdx((i) => (i + 1) % slides.length)}>&#10095;</button>
             </div>
           ) : (
             <div className="slider" style={{ display: "grid", placeItems: "center", padding: 16 }}>
@@ -623,9 +624,9 @@ body{
   line-height: 1.2;
 }
 .strip-subtitle a{
-  color: #c1121f;             /* red */
-  text-decoration: underline; /* underline */
-  font-style: italic;         /* italics */
+  color: #c1121f;
+  text-decoration: underline;
+  font-style: italic;
   font-weight: 700;
 }
 
@@ -792,8 +793,8 @@ body{
 }
 .resources-grid{
   display:grid;
-  grid-template-columns: 1.2fr 1fr;   /* big image on the left */
-  gap: clamp(20px, 3vw, 32px);        /* space between image and text */
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(20px, 3vw, 32px);
   align-items: stretch;
 }
 @media (max-width: 920px){
@@ -823,7 +824,7 @@ body{
   border: 1px solid rgba(15,39,50,.12);
   border-radius: 10px;
   overflow: hidden;
-  text-align: center; /* center all text in the right column */
+  text-align: center;
   min-height: 100%;
 }
 .resources-text--with-splash{
@@ -832,7 +833,6 @@ body{
   background-repeat: no-repeat;
 }
 .resources-text::before{
-  /* soft scrim for text readability */
   content: "";
   position: absolute; top:0; left:0; right:0; bottom:0;
   background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.88));
