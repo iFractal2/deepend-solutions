@@ -825,9 +825,13 @@ body{
 .resources-video-bg__scrim{
   position: absolute;
   inset: 0;
-  /* soft white scrim so text stays readable on top of video */
-  background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.92));
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.25),   /* lighter top fade */
+    rgba(255,255,255,.45)    /* lighter bottom fade */
+  );
 }
+
 
 /* Keep the actual content above the video */
 .section--resources > .container{
