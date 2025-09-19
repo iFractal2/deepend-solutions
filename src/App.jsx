@@ -860,8 +860,7 @@ body{
   overflow: hidden;
   text-align: center;
   min-height: 100%;
-  background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(44, 139, 218, 0.12));
-  border: 1px solid rgba(0,0,0,.06);
+  
 }
 .resources-text__inner{
   position: relative;
