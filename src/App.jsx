@@ -919,7 +919,7 @@ body{
   font-size: clamp(16px, 2.4vw, 20px);
 }
 .resources-cta-link{
-  color: #0b63c8;
+  color: #bb3a29ff;
   text-decoration: underline;
   font-style: italic;
   font-weight: 700;
