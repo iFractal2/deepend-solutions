@@ -764,31 +764,32 @@ body{
 .rcard__tint{ position:absolute; inset:0; opacity:.48; mix-blend-mode: screen; }
 
 /* Sliding black cover (with angled flair drawn by ::before) */
+/* Sliding black cover */
 .rcard__cover{
   position:absolute; left:0; right:0; bottom:0;
   height: var(--cover-closed);
   background: var(--cover-bg);
-  border-top: 1px solid rgba(255,255,255,.08);
+  border-top: 1px solid rgba(255,255,255,.08); /* keep the cover's border */
   padding: 14px 18px 16px;
   z-index:1;
   transition: height .28s ease;
   will-change: height;
-
-  /* NEW: allow proper layout & scrolling */
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-  isolation:isolate; /* create a new stacking context */
 }
+
+/* Angled flair – push it higher and don't draw another border */
 .rcard__cover::before{
   content:"";
-  position:absolute; left:0; right:0; top:-36px; height:40px; /* moved up a few px */
+  position:absolute; left:0; right:0;
+  
+  top:-44px;              /* was -28px */
+ 
+  height:44px;            /* was 32px */
   background: var(--cover-bg);
-  border-top: 1px solid rgba(255,255,255,.08);
-  clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%); /* angled flair */
-  z-index:0;            /* ensure it's behind content */
-  pointer-events:none;
+  border-top: none;       /* remove duplicate seam */
+  clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%);
+  pointer-events: none;
 }
+
 .rcard:hover .rcard__cover,
 .rcard--open .rcard__cover{ height: var(--cover-open); }
 
