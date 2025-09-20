@@ -360,20 +360,21 @@ function ResourceCard({ title, body, prefix, tint = ["#0b63c8", "#13909e"], acti
 function AdditionalResources() {
   const [active, setActive] = useState(null);
 
+  // ORDER: Retail, Repair, Maintenance
   const items = [
-    {
-      title: "Repair",
-      key: "repair",
-      text:
-        "Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment — from pumps, filters, and heaters to automation systems and more. Whether it’s a small fix or a major breakdown, we’ll diagnose the issue quickly and get your pool running smoothly again so you can enjoy a hassle-free swim season.",
-      tint: ["#0b63c8", "#13909e"], // blue → teal
-    },
     {
       title: "Retail",
       key: "retail",
       text:
         "If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products to keep your pool crystal clear, safe, and fun. We offer free water testing every day. Visit us at any of our four convenient locations in North Richland Hills, Roanoke, Lantana, or Flower Mound to experience the difference in person.",
       tint: ["#13909e", "#22c1d6"], // teal → aqua
+    },
+    {
+      title: "Repair",
+      key: "repair",
+      text:
+        "Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment — from pumps, filters, and heaters to automation systems and more. Whether it’s a small fix or a major breakdown, we’ll diagnose the issue quickly and get your pool running smoothly again so you can enjoy a hassle-free swim season.",
+      tint: ["#0b63c8", "#13909e"], // blue → teal
     },
     {
       title: "Maintenance",
@@ -780,9 +781,7 @@ body{
 .rcard__cover::before{
   content:"";
   position:absolute; left:0; right:0;
-  
   top:-44px;              /* was -28px */
- 
   height:44px;            /* was 32px */
   background: var(--cover-bg);
   border-top: none;       /* remove duplicate seam */
