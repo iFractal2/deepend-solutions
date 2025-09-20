@@ -112,61 +112,6 @@ export default function App() {
 
   const handleClose = () => setExpandedKey(null);
 
-  // ===== Mobile-safe autoplay for the RESOURCES background video =====
-  const resVidRef = useRef(null);
-  const resVidWrapRef = useRef(null);
-
-  useEffect(() => {
-    const v = resVidRef.current;
-    const wrap = resVidWrapRef.current;
-    if (!v || !wrap) return;
-
-    // Try to play immediately (muted+inline should work on iOS/Android).
-    const tryPlay = () => v.play().catch(() => {
-      // If blocked, mark wrapper for CSS fallback image.
-      wrap.setAttribute("data-fallback", "1");
-    });
-
-    // IntersectionObserver to (re)attempt play when scrolled into view (helps iOS).
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            tryPlay();
-          } else {
-            // Save battery when out of view.
-            v.pause();
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-    io.observe(wrap);
-
-    // Also switch to fallback if a runtime error occurs.
-    const onError = () => wrap.setAttribute("data-fallback", "1");
-    v.addEventListener("error", onError);
-    v.addEventListener("stalled", onError);
-    v.addEventListener("abort", onError);
-
-    // If it can play, ensure fallback removed (e.g., rotate/return to page).
-    const onCanPlay = () => wrap.removeAttribute("data-fallback");
-    v.addEventListener("canplay", onCanPlay);
-    v.addEventListener("loadeddata", onCanPlay);
-
-    // Initial attempt
-    tryPlay();
-
-    return () => {
-      io.disconnect();
-      v.removeEventListener("error", onError);
-      v.removeEventListener("stalled", onError);
-      v.removeEventListener("abort", onError);
-      v.removeEventListener("canplay", onCanPlay);
-      v.removeEventListener("loadeddata", onCanPlay);
-    };
-  }, []);
-
   return (
     <div style={{ fontFamily: "Oswald, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", color: "#1a2b3c", margin: 0 }}>
       <style>{css}</style>
@@ -259,25 +204,17 @@ export default function App() {
 
       {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
       <section className="section section--resources fade-on-view" id="resources">
-        {/* Background video with mobile-safe autoplay + fallback */}
-        <div className="resources-video-bg" aria-hidden="true" ref={resVidWrapRef}>
+        {/* Background video */}
+        <div className="resources-video-bg" aria-hidden="true">
           <video
             className="resources-video-bg__media"
-            ref={resVidRef}
+            src="/videos/bubbles.mp4"
             autoPlay
             loop
             muted
             playsInline
-            // iOS-specific hints:
-            // @ts-ignore
-            webkit-playsinline="true"
-            disablePictureInPicture
             preload="auto"
-            poster="/images/bubbles_fallback.jpg"
-          >
-            <source src="/videos/bubbles.mp4" type="video/mp4" />
-            {/* If you add a WebM, keep this line: <source src="/videos/bubbles.webm" type="video/webm" /> */}
-          </video>
+          />
           <div className="resources-video-bg__scrim" />
         </div>
 
@@ -851,19 +788,16 @@ body{
 }
 
 /* -------- Additional Resources styles -------- */
+/* Resources section video background */
 .section--resources{
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* clip video edges like the hero section */
 }
 
 .resources-video-bg{
   position: absolute;
   inset: 0;
-  z-index: 0;
-  /* Fallback static image background; used if data-fallback=1 or Reduce Motion */
-  background-image: url('/images/bubbles_fallback.jpg');
-  background-size: cover;
-  background-position: center;
+  z-index: 0; /* behind content */
 }
 
 .resources-video-bg__media{
@@ -873,11 +807,6 @@ body{
   height: 100%;
   object-fit: cover;
   filter: brightness(1) saturate(1.05);
-}
-
-/* When the browser blocks autoplay or errors out, hide video and rely on bg image */
-.resources-video-bg[data-fallback="1"] .resources-video-bg__media{
-  display: none;
 }
 
 .resources-video-bg__scrim{
@@ -896,7 +825,7 @@ body{
   z-index: 1;
 }
 
-/* Accessibility: respect reduced motion — hide video but keep static bg image visible */
+/* Accessibility: respect reduced motion */
 @media (prefers-reduced-motion: reduce){
   .resources-video-bg__media{ display: none; }
 }
@@ -931,8 +860,7 @@ body{
   overflow: hidden;
   text-align: center;
   min-height: 100%;
-  background: linear-gradient(180deg, rgba(255,255,255,.52), rgba(44, 139, 218, 0.12));
-  border: 1px solid rgba(0,0,0,.06);
+  
 }
 .resources-text__inner{
   position: relative;
