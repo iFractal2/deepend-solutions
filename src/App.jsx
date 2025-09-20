@@ -162,6 +162,7 @@ export default function App() {
       <section ref={whatRef} className="section section--video fade-on-view">
         <div className="video-bg" aria-hidden="true">
           <video
+          
             className="video-bg__media"
             src="/videos/whatwedo.mp4"
             autoPlay
