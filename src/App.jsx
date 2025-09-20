@@ -318,51 +318,118 @@ function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
   );
 }
 
-/* -------- Additional Resources component (NO images) -------- */
+/* ------------------- Resources Cards (fixed-size; sliding cover only) ------------------- */
+function ResourceCard({ title, body, prefix, tint = ["#0b63c8", "#13909e"], active, setActive }) {
+  const [img, setImg] = useState(null);
+  useEffect(() => setImg(firstSlideFor(prefix)), [prefix]);
+
+  const isOpen = active === prefix;
+  const toggle = () => setActive((k) => (k === prefix ? null : prefix));
+  const keyToggle = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle();
+    }
+  };
+
+  return (
+    <article
+      className={`rcard ${isOpen ? "rcard--open" : ""}`}
+      onClick={toggle}
+      onKeyDown={keyToggle}
+      tabIndex={0}
+      role="button"
+      aria-expanded={isOpen}
+      aria-label={`${title} details`}
+    >
+      {/* Full-card image */}
+      <div className="rcard__media" aria-hidden="true">
+        {img ? <img src={img} alt="" /> : <div className="rcard__ph">Image coming soon</div>}
+        <div className="rcard__tint" style={{ background: `linear-gradient(135deg, ${tint[0]}, ${tint[1]})` }} />
+      </div>
+
+      {/* Sliding black cover with angled flair (pseudo-element draws the angle) */}
+      <div className="rcard__cover">
+        <h4 className="rcard__title">{title}</h4>
+        <p className="rcard__text">{body}</p>
+      </div>
+    </article>
+  );
+}
+
 function AdditionalResources() {
+  const [active, setActive] = useState(null);
+
+  const items = [
+    {
+      title: "Repair",
+      key: "repair",
+      text:
+        "Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment — from pumps, filters, and heaters to automation systems and more. Whether it’s a small fix or a major breakdown, we’ll diagnose the issue quickly and get your pool running smoothly again so you can enjoy a hassle-free swim season.",
+      tint: ["#0b63c8", "#13909e"], // blue → teal
+    },
+    {
+      title: "Retail",
+      key: "retail",
+      text:
+        "If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products to keep your pool crystal clear, safe, and fun. We offer free water testing every day. Visit us at any of our four convenient locations in North Richland Hills, Roanoke, Lantana, or Flower Mound to experience the difference in person.",
+      tint: ["#13909e", "#22c1d6"], // teal → aqua
+    },
+    {
+      title: "Maintenance",
+      key: "maintenance",
+      text:
+        "Keeping your pool healthy and inviting takes consistent care, and that’s where our maintenance team shines. From routine cleanings to full green-to-clean treatments, we make sure your pool is always ready to enjoy. Ask about our weekly service options for reliable, flexible upkeep.",
+      tint: ["#0a1040", "#0b63c8"], // deep navy → blue
+    },
+  ];
+
+  // poolwerx_logo.* should be in /src/assets/images/, prefix becomes "poolwerx"
+  const pwLogo = firstSlideFor("poolwerx");
+
   return (
     <div className="resources">
-      <h3 className="resources-title">Additional Resources</h3>
+      <h3 className="resources-title">You've reached The Deep End...</h3>
 
-      {/* Single-column layout with text only */}
-      <div className="resources-grid resources-grid--text-only">
-        <div className="resources-text">
-          <div className="resources-text__inner">
-            <div className="resource-item">
-              <h4>Repair</h4>
-              <p>
-                Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment — from pumps, filters, and heaters to automation systems and more. Whether it’s a small fix or a major breakdown, we’ll diagnose the issue quickly and get your pool running smoothly again so you can enjoy a hassle-free swim season.
-              </p>
-            </div>
+      <div className="resources-cards">
+        {items.map((it) => (
+          <ResourceCard
+            key={it.key}
+            title={it.title}
+            body={it.text}
+            prefix={it.key}
+            tint={it.tint}
+            active={active}
+            setActive={setActive}
+          />
+        ))}
+      </div>
 
-            <div className="resource-item">
-              <h4>Retail</h4>
-              <p>
-                If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products to keep your pool crystal clear, safe, and fun. We offer free water testing every day, so you’ll always know exactly what your pool needs. From essential maintenance supplies and replacement parts to floats, games, and accessories, we carry everything you need — all backed by expert advice to help you choose the right products for your pool. Visit us at any of our four convenient locations in North Richland Hills, Roanoke, Lantana, or Flower Mound to experience the difference in person.
-              </p>
-            </div>
+      <p className="resources-cta">
+        For more information regarding your Retail/Repair/Maintenance needs:<br />
+        <a
+          className="resources-cta-link"
+          href="https://www.poolwerx.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Click here for more information regarding Retail, Repair, and Maintenance"
+        >
+          poolwerx.com
+        </a>
+        <br />
+         <span className="resources-cta-sub">972-962-9119</span>
+         <br />
+         <span className="resources-cta-sub">deepend@poolwerx.com</span>
+      </p>
 
-            <div className="resource-item">
-              <h4>Maintenance</h4>
-              <p>
-                Keeping your pool healthy and inviting takes consistent care, and that’s where our maintenance team shines. From routine cleanings to full green-to-clean treatments, we make sure your pool is always ready to enjoy. Our technicians handle brushing, skimming, vacuuming, chemical balancing, and filter care with precision, so you don’t have to. Whether you need a one-time deep clean or ongoing upkeep, we’ve got the perfect plan for you — just ask us about our weekly service options! With our flexible scheduling and reliable team, you can relax knowing your pool will always look its best.
-              </p>
-            </div>
-
-            <p className="resources-cta">
-              For more information regarding your Retail/Repair/Maintenance needs<br />
-              <a
-                className="resources-cta-link"
-                href="https://www.poolwerx.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Click here for more information regarding Retail, Repair, and Maintenance"
-              >
-                Click here!
-              </a>
-            </p>
+      {/* Powered by Poolwerx (centered, with local frosted chip to improve visibility) */}
+      <div className="poweredby">
+        <div className="poweredby__text">Powered by:</div>
+        {pwLogo ? (
+          <div className="poweredby__chip">
+            <img className="poweredby__logo" src={pwLogo} alt="Poolwerx" />
           </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );
@@ -482,7 +549,6 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
                 ))}
               </ul>
               <button className="nav prev" aria-label="Previous" onClick={() => setIdx((i) => (i - 1 + slides.length) % slides.length)}>&#10094;</button>
-              {/* FIXED LINE BELOW — complete HTML entity and valid arrow */}
               <button className="nav next" aria-label="Next" onClick={() => setIdx((i) => (i + 1) % slides.length)}>&#10095;</button>
             </div>
           ) : (
@@ -530,7 +596,16 @@ const css = `
 
   --topbar-bg-1: #0c1550;
   --topbar-bg-2: #0a1040;
-  --cyan: #13909e;
+  --brand-blue: #0b63c8;
+  --brand-deep: #091728;
+  --brand-navy: #0a1040;
+  --brand-teal: #13909e;
+
+  --cover-closed: clamp(56px, 7.2vw, 74px); /* just big enough for title */
+  --cover-open: 78%;
+
+  --cover-bg: linear-gradient(180deg, rgba(9,23,40,.92), rgba(9,23,40,.96));
+  --text-soft: #d8e6f3;
 }
 
 *{box-sizing:border-box}
@@ -553,111 +628,49 @@ body{
   letter-spacing: .02em;
   border-bottom: 1px solid rgba(255,255,255,.08);
 }
-.topbar__inner{
-  position: relative;
-  padding: 6px 0;
-  min-height: 36px;
-}
+.topbar__inner{ position: relative; padding: 6px 0; min-height: 36px; }
 .topbar__text{
-  width: 100%;
-  text-align: center;
-  font-weight: 600;
-  line-height: 1.2;
-  padding: 6px 80px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  width: 100%; text-align: center; font-weight: 600; line-height: 1.2;
+  padding: 6px 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .topbar__btn{
-  position: absolute;
-  right: 0; top: 50%; transform: translateY(-50%);
-  text-decoration: none;
-  color:#e8efff;
-  border: 2px solid #ffffff;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-weight: 700;
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  text-decoration: none; color:#e8efff; border: 2px solid #ffffff;
+  padding: 6px 10px; border-radius: 8px; font-weight: 700;
   transition: transform .12s ease, background-color .12s ease, color .12s ease, border-color .12s ease;
-  background: transparent;
-  white-space: nowrap;
+  background: transparent; white-space: nowrap;
 }
-.topbar__btn:hover{
-  transform: translateY(-50%) translateY(-1px);
-  background: rgba(255,255,255,.06);
-  border-color: #fff;
-  color: #fff;
-}
+.topbar__btn:hover{ transform: translateY(calc(-50% - 1px)); background: rgba(255,255,255,.06); border-color:#fff; }
 @media (max-width: 560px){
   .topbar__inner{ padding: 8px 0 44px; }
   .topbar__text{ padding: 6px 10px; }
-  .topbar__btn{
-    position: absolute;
-    right: 10px; left: 10px; top: auto; bottom: 6px;
-    transform: none;
-    text-align: center;
-  }
+  .topbar__btn{ right: 10px; left: 10px; top: auto; bottom: 6px; transform: none; text-align:center; }
 }
 
 /* HERO */
 .hero{ margin:0; padding:20px 0 0; background: var(--hero-bg); text-align:center }
 .hero-img{ width:100%; max-width: var(--hero-max-w); height:auto; display:inline-block; margin:0 auto }
+.hero-subtitle { text-align:center; margin:12px 0 16px; font-size: clamp(18px, 2.8vw, 24px); font-weight:600; color:#067796; }
 
 /* Yellow strip with financing line ABOVE the title */
-.hero-strip{
-  position: relative;
-  background: var(--strip);
-  border-top:4px solid var(--strip-border);
-}
-.hero-strip > .container{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding: 10px 20px 12px;
-  gap: 6px;
-}
-.strip-title{
-  font-size: clamp(18px, 2.6vw, 22px);
-  font-weight: 800;
-  color: var(--cyan);
-}
-.strip-subtitle{
-  text-align:center;
-  font-size: clamp(14px, 2.2vw, 18px);
-  font-weight: 600;
-  color: #0f2732;
-  line-height: 1.2;
-}
-.strip-subtitle a{
-  color: #c1121f;
-  text-decoration: underline;
-  font-style: italic;
-  font-weight: 700;
-}
+.hero-strip{ position: relative; background: var(--strip); border-top:4px solid var(--strip-border); }
+.hero-strip > .container{ display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 10px 20px 12px; gap: 6px; }
+.strip-title{ font-size: clamp(18px, 2.6vw, 22px); font-weight: 800; color: var(--brand-teal); }
+.strip-subtitle{ text-align:center; font-size: clamp(14px, 2.2vw, 18px); font-weight: 600; color: #0f2732; line-height: 1.2; }
+.strip-subtitle a{ color:#c1121f; text-decoration: underline; font-style: italic; font-weight: 700; }
 
 /* Sections */
 .section{ position:relative; padding: clamp(22px, 5vw, 56px) 0 }
 
 /* Section video bg */
 .section--video{ overflow:hidden }
-.video-bg{ position:absolute; top:0; left:0; right:0; bottom:0; z-index:0 }
-.video-bg__media{
-  position:absolute; top:0; left:0; right:0; bottom:0;
-  width:100%; height:100%; object-fit:cover;
-  filter: brightness(.95) saturate(1.05);
-}
-.video-bg__scrim{
-  position:absolute; top:0; left:0; right:0; bottom:0;
-  background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.88) 60%, rgba(255,255,255,1));
-}
+.video-bg{ position:absolute; inset:0; z-index:0 }
+.video-bg__media{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter: brightness(.95) saturate(1.05); }
+.video-bg__scrim{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.88) 60%, rgba(255,255,255,1)); }
 .section--video > .container{ position:relative; z-index:1 }
 
 /* Divider */
-.section-divider{
-  border-top: 4px solid #0b63c8;  /* solid blue line */
-  width: 100%;
-  margin: 0;
-}
+.section-divider{ border-top: 4px solid var(--brand-blue); width: 100%; margin: 0; }
 
 /* Fade-in */
 .fade-on-view{ opacity:0; transform:translateY(8px); transition: opacity .45s ease, transform .45s ease }
@@ -677,240 +690,166 @@ body{
 }
 .service:hover{ transform: translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,.12) }
 .service--hidden{ opacity:0; pointer-events:none }
-
 .service__thumb{ position:relative; width:100%; aspect-ratio:16/9 }
 .service__thumb img{ width:100%; height:100%; object-fit:cover }
-
 .service__title{ padding:12px 14px; font-weight:800; color:#fff }
 
 /* ----------- FLIP Overlay ----------- */
-.expanded-overlay{
-  position: fixed; top:0; left:0; right:0; bottom:0;
-  display: grid; align-items: start; justify-items: center;
-  padding: clamp(10px, 4vh, 24px) 12px;
-  background: rgba(0,0,0,.28);
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  z-index: 50; will-change: transform, opacity;
-  pointer-events: none;
-}
-.expanded{
-  width: min(1100px, 96vw);
-  border: 1px solid var(--expanded-border);
-  border-radius: 12px;
-  box-shadow: var(--expanded-shadow);
-  overflow: hidden; position: relative; will-change: transform, opacity;
-  pointer-events: auto;
-}
-@media (max-width: 560px){
-  .expanded{ width: 100%; border-radius: 10px; }
-}
-
-.close{
-  position:absolute; top:10px; right:12px;
-  width:40px; height:40px; border:none; border-radius:10px; cursor:pointer;
-  background:#eef1f6; color:#111; font-size:26px; line-height:40px; text-align:center;
-  transition: background .18s ease, transform .18s ease;
-}
+.expanded-overlay{ position: fixed; inset:0; display:grid; align-items:start; justify-items:center; padding: clamp(10px, 4vh, 24px) 12px; background: rgba(0,0,0,.28); backdrop-filter: blur(6px); z-index: 50; pointer-events:none; }
+.expanded{ width: min(1100px, 96vw); border:1px solid var(--expanded-border); border-radius:12px; box-shadow: var(--expanded-shadow); overflow:hidden; position:relative; pointer-events:auto; }
+@media (max-width: 560px){ .expanded{ width:100%; border-radius:10px; } }
+.close{ position:absolute; top:10px; right:12px; width:40px; height:40px; border:none; border-radius:10px; cursor:pointer; background:#eef1f6; color:#111; font-size:26px; line-height:40px; text-align:center; transition: background .18s ease, transform .18s ease; }
 .close:hover{ background:#e5e9f1; transform: translateY(-1px) }
-
-.expanded__header{ padding: 14px 14px 8px }
+.expanded__header{ padding:14px 14px 8px }
 .expanded__header h3{ margin:0; font-size: clamp(18px, 2.6vw, 26px) }
-
-.expanded__content{
-  display:grid; grid-template-columns: 1.25fr 1fr;
-  gap: 14px; padding: 8px 14px 14px;
-}
+.expanded__content{ display:grid; grid-template-columns: 1.25fr 1fr; gap:14px; padding: 8px 14px 14px; }
 @media(max-width:900px){ .expanded__content{ grid-template-columns: 1fr } }
-
-/* Slider */
 .slider{ position:relative; overflow:hidden; border:1px solid var(--border); border-radius:8px; background:#0b111c10 }
 .slider__track{ display:flex; margin:0; padding:0; list-style:none; transition: transform .35s ease }
 .slider__slide{ min-width:100%; aspect-ratio:16/9; background:#f1f5fb; position:relative }
 .slider__slide img{ width:100%; height:100%; object-fit:cover; display:block }
-.nav{
-  position:absolute; top:50%; transform:translateY(-50%);
-  background:rgba(0,0,0,.45); color:#fff; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer;
-}
+.nav{ position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.45); color:#fff; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; }
 .nav:hover{ background:rgba(0,0,0,.65) }
 .prev{ left:8px } .next{ right:8px }
-
-/* Scrollable text (white background) */
-.expanded__text{
-  border:1px solid var(--border); border-radius:8px; padding:12px;
-  max-height: 360px; overflow:auto; background:#fff;
-}
-@media (max-width: 560px){
-  .expanded__text{ max-height: 320px; }
-}
+.expanded__text{ border:1px solid var(--border); border-radius:8px; padding:12px; max-height: 360px; overflow:auto; background:#fff; }
+@media (max-width: 560px){ .expanded__text{ max-height: 320px; } }
 .expanded__text p{ margin:0 0 10px; line-height:1.55 }
 
 /* ------------------- CONTACT SECTION (plain centered) ------------------- */
-.contact-section{
-  background: var(--strip);
-  border-top: 4px solid var(--strip-border);
-  padding: clamp(36px, 6vw, 72px) 0;
-}
-.contact-title{
-  margin: 0 0 14px;
-  font-size: clamp(24px,3.2vw,34px);
-  color:#0f2732;
-  text-align:center;
-}
-.contact-lines{
-  max-width: 720px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 0 8px;
-}
+.contact-section{ background: var(--strip); border-top: 4px solid var(--strip-border); padding: clamp(36px, 6vw, 72px) 0; }
+.contact-title{ margin:0 0 14px; font-size: clamp(24px,3.2vw,34px); color:#0f2732; text-align:center; }
+.contact-lines{ max-width: 720px; margin: 0 auto; text-align:center; padding: 0 8px; }
 .contact-block{ margin: 10px auto 14px; }
-.contact-label{
-  display:block;
-  font-weight: 700;
-  color:#0f2732;
-  margin-bottom: 6px;
-  font-size: clamp(18px, 2.6vw, 20px);
-}
-.contact-value{
-  display:block;
-  text-decoration: none;
-  border-bottom: 1px dashed rgba(15,39,50,.25);
-  color:#0f2732;
-  font-weight: 700;
-  font-size: clamp(18px, 2.6vw, 22px);
-  margin: 0 auto;
-  width: fit-content;
-}
+.contact-label{ display:block; font-weight:700; color:#0f2732; margin-bottom:6px; font-size: clamp(18px, 2.6vw, 20px); }
+.contact-value{ display:block; text-decoration:none; border-bottom: 1px dashed rgba(15,39,50,.25); color:#0f2732; font-weight:700; font-size: clamp(18px, 2.6vw, 22px); margin:0 auto; width:fit-content; }
 .contact-value:hover{ border-bottom-color: rgba(15,39,50,.55) }
-.contact-note{
-  margin-top: 6px;
-  color:#2f4750;
-  font-size: clamp(14px, 2vw, 16px);
-}
+.contact-note{ margin-top:6px; color:#2f4750; font-size: clamp(14px, 2vw, 16px); }
 
-/* -------- Additional Resources styles -------- */
-/* Resources section video background */
-.section--resources{
+/* -------- Additional Resources (CARD GRID) -------- */
+.section--resources{ position:relative; overflow:hidden; }
+.resources-video-bg{ position:absolute; inset:0; z-index:0; }
+.resources-video-bg__media{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter: brightness(1) saturate(1.05); }
+.resources-video-bg__scrim{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.38)); }
+.section--resources > .container{ position:relative; z-index:1; }
+@media (prefers-reduced-motion: reduce){ .resources-video-bg__media{ display:none; } }
+
+.resources-title{ text-align:center; color:#0f2732; font-size: clamp(20px, 2.8vw, 26px); margin: 0 0 18px; font-weight:800; }
+
+/* Card grid */
+.resources-cards{ display:grid; gap: clamp(16px, 2.2vw, 24px); grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 1050px){ .resources-cards{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px){ .resources-cards{ grid-template-columns: 1fr; } }
+
+/* Card (fixed size; only cover animates) */
+.rcard{
   position: relative;
-  overflow: hidden; /* clip video edges like the hero section */
-}
-
-.resources-video-bg{
-  position: absolute;
-  inset: 0;
-  z-index: 0; /* behind content */
-}
-
-.resources-video-bg__media{
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(1) saturate(1.05);
-}
-
-.resources-video-bg__scrim{
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,.25),
-    rgba(255,255,255,.45)
-  );
-}
-
-/* Keep the actual content above the video */
-.section--resources > .container{
-  position: relative;
-  z-index: 1;
-}
-
-/* Accessibility: respect reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .resources-video-bg__media{ display: none; }
-}
-
-/* TEXT-ONLY layout */
-.section--resources{ padding-top: clamp(28px, 6vw, 64px); padding-bottom: clamp(28px, 6vw, 64px); }
-.resources-title{
-  text-align:center;
-  color:#0f2732;
-  font-size: clamp(20px, 2.8vw, 26px);
-  margin: 0 0 18px;
-  font-weight: 800;
-}
-
-/* Single column, centered */
-.resources-grid{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: clamp(20px, 3vw, 32px);
-  align-items: stretch;
-  justify-items: center;
-}
-.resources-grid--text-only .resources-text{
-  width: 100%;
-  max-width: 900px; /* keep paragraphs readable */
-}
-
-/* Removed: image column & splash background */
-.resources-text{
-  position: relative;
-  border-radius: 10px;
+  border-radius: 16px;
   overflow: hidden;
-  text-align: center;
-  min-height: 100%;
-  
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+  background:#0f1118;
+  color:#e6eef8;
+  cursor:pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+  outline:none;
+  height: clamp(260px, 38vw, 360px); /* fixed card height */
 }
-.resources-text__inner{
-  position: relative;
-  z-index: 1;
-  padding: clamp(16px, 2.5vw, 22px);
+.rcard:hover{ transform: translateY(-3px); box-shadow: 0 16px 36px rgba(0,0,0,.22); }
+.rcard:focus-visible{ box-shadow: 0 0 0 3px #7dd3fc, 0 12px 30px rgba(0,0,0,.22); }
+
+/* Full image behind */
+.rcard__media{ position:absolute; inset:0; z-index:0; overflow:hidden; }
+.rcard__media img{ width:100%; height:100%; object-fit:cover; display:block; filter: contrast(1.05) saturate(1.08); }
+.rcard__ph{ display:grid; place-items:center; height:100%; color:#9fb3c8; background:#1e2736; font-weight:700; }
+.rcard__tint{ position:absolute; inset:0; opacity:.48; mix-blend-mode: screen; }
+
+/* Sliding black cover (with angled flair drawn by ::before) */
+.rcard__cover{
+  position:absolute; left:0; right:0; bottom:0;
+  height: var(--cover-closed);
+  background: var(--cover-bg);
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 14px 18px 16px;
+  z-index:1;
+  transition: height .28s ease;
+  will-change: height;
 }
-.resources-text .resource-item + .resource-item{
-  margin-top: clamp(12px, 2vw, 16px);
+.rcard__cover::before{
+  content:"";
+  position:absolute; left:0; right:0; top:-28px; height:32px;
+  background: var(--cover-bg);
+  border-top: 1px solid rgba(255,255,255,.08);
+  clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%); /* angled flair */
 }
-.resource-item h4{
-  margin: 0 0 6px;
-  font-size: clamp(16px, 2.2vw, 20px);
-  color:#0f2732;
+.rcard:hover .rcard__cover,
+.rcard--open .rcard__cover{ height: var(--cover-open); }
+
+/* Title sits safely below the angled flair */
+.rcard__title{
+  margin: 2px 0 8px;
+  font-size: clamp(18px, 2.4vw, 20px);
+  font-weight: 800;
+  letter-spacing: .2px;
+  color:#fff;
+  transition: transform .22s ease, color .22s ease;
 }
-.resource-item p{
-  margin: 0;
-  line-height: 1.55;
-  color:#2f4750;
-}
-.resources-cta{
-  margin-top: clamp(18px, 3vw, 26px);
-  color:#0f2732;
-  font-weight: 700;
-  text-align: center;
-  font-size: clamp(16px, 2.4vw, 20px);
-}
-.resources-cta-link{
-  color: #bb3a29ff;
-  text-decoration: underline;
-  font-style: italic;
-  font-weight: 700;
+.rcard:hover .rcard__title,
+.rcard--open .rcard__title{
+  transform: translateY(-2px);
+  color:#ffffff;
 }
 
-/* Hero subtitle color & spacing */
-.hero-subtitle {
-  text-align: center;
+/* Text reveal inside the cover (card doesn't resize) */
+.rcard__text{
+  margin:0;
+  color: var(--text-soft);
+  line-height:1.55;
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transition: max-height .28s ease, opacity .22s ease;
+}
+.rcard:hover .rcard__text,
+.rcard--open .rcard__text{
+  max-height: 220px;
+  opacity:1;
+}
+
+/* CTA & Powered by */
+.resources-cta{ margin-top: clamp(18px, 3vw, 26px); color:#0f2732; font-weight:700; text-align:center; font-size: clamp(16px, 2.4vw, 20px); }
+.resources-cta-link{ color:#fff; text-decoration: underline; font-style: italic; font-weight:700; }
+
+.poweredby{
   margin-top: 12px;
-  margin-bottom: 16px;
-  font-size: clamp(18px, 2.8vw, 24px);
-  font-weight: 600;
-  color: #067796;
+  text-align: center;
+}
+.poweredby__text{
+  color:#0f2732;
+  font-weight: 700;
+  font-size: clamp(14px, 2.2vw, 16px);
+  margin-bottom: 6px;
+}
+/* Frosted chip only around the logo for better readability (does NOT affect video gradients) */
+.poweredby__chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.10);
+  backdrop-filter: blur(8px) saturate(1.15);
+  -webkit-backdrop-filter: blur(8px) saturate(1.15);
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+}
+.poweredby__logo{
+  display: block;
+  width: clamp(80px, 24vw, 160px);
+  height: auto;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 6px 16px rgba(0,0,0,.22));
 }
 
 /* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
 }
 `;
