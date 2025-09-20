@@ -162,7 +162,6 @@ export default function App() {
       <section ref={whatRef} className="section section--video fade-on-view">
         <div className="video-bg" aria-hidden="true">
           <video
-          
             className="video-bg__media"
             src="/videos/whatwedo.mp4"
             autoPlay
@@ -349,7 +348,7 @@ function ResourceCard({ title, body, prefix, tint = ["#0b63c8", "#13909e"], acti
         <div className="rcard__tint" style={{ background: `linear-gradient(135deg, ${tint[0]}, ${tint[1]})` }} />
       </div>
 
-      {/* Sliding black cover with angled flair (pseudo-element draws the angle) */}
+      {/* Sliding black cover with angled flair */}
       <div className="rcard__cover">
         <h4 className="rcard__title">{title}</h4>
         <p className="rcard__text">{body}</p>
@@ -774,13 +773,21 @@ body{
   z-index:1;
   transition: height .28s ease;
   will-change: height;
+
+  /* NEW: allow proper layout & scrolling */
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  isolation:isolate; /* create a new stacking context */
 }
 .rcard__cover::before{
   content:"";
-  position:absolute; left:0; right:0; top:-28px; height:32px;
+  position:absolute; left:0; right:0; top:-36px; height:40px; /* moved up a few px */
   background: var(--cover-bg);
   border-top: 1px solid rgba(255,255,255,.08);
   clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%); /* angled flair */
+  z-index:0;            /* ensure it's behind content */
+  pointer-events:none;
 }
 .rcard:hover .rcard__cover,
 .rcard--open .rcard__cover{ height: var(--cover-open); }
@@ -793,6 +800,7 @@ body{
   letter-spacing: .2px;
   color:#fff;
   transition: transform .22s ease, color .22s ease;
+  position:relative; z-index:1; /* above the flair */
 }
 .rcard:hover .rcard__title,
 .rcard--open .rcard__title{
@@ -809,16 +817,33 @@ body{
   overflow:hidden;
   opacity:0;
   transition: max-height .28s ease, opacity .22s ease;
+
+  /* NEW: fill remaining space and be scrollable when open */
+  flex: 1 1 auto;
+  min-height:0;
+  position:relative; z-index:1; /* above the flair */
 }
 .rcard:hover .rcard__text,
 .rcard--open .rcard__text{
-  max-height: 220px;
+  max-height: none;
+  overflow: hidden;
   opacity:1;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Give the open cover a bit more room on small screens */
+@media (max-width: 640px){
+  :root{
+    --cover-open: 92%;
+  }
+  .rcard__cover{ padding: 12px 14px 14px; }
+  .rcard__title{ margin: 2px 0 6px; }
 }
 
 /* CTA & Powered by */
 .resources-cta{ margin-top: clamp(18px, 3vw, 26px); color:#0f2732; font-weight:700; text-align:center; font-size: clamp(16px, 2.4vw, 20px); }
 .resources-cta-link{ color:#fff; text-decoration: underline; font-style: italic; font-weight:700; }
+.resources-cta-sub{ color:#ffffff; }
 
 .poweredby{
   margin-top: 12px;
