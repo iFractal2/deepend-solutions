@@ -96,257 +96,387 @@
     height: 100%;
   }
 
-  /* Mobile responsive - scale down but keep side-by-side */
+  /* Mobile responsive - stack vertically and increase sizes */
   @media (max-width: 768px) {
     .app {
-      padding: 12px 8px;
+      padding: 16px;
     }
 
     .calculator-grid {
-      gap: 8px;
-      margin-bottom: 12px;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
-    .card {
-      padding: 12px;
-      margin-bottom: 12px;
+    .chemistry-grid-header {
+      display: none;
     }
 
-    .card h2 {
-      font-size: 0.9rem;
-      margin-bottom: 12px;
+    .header-parameter {
+      display: none;
     }
 
-    .card h2::before {
-      width: 3px;
+    .chemistry-row {
+      display: block;
+      padding: 16px 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .chemistry-row:last-child {
+      border-bottom: none;
+    }
+
+    .parameter-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 0;
+      margin-bottom: 16px;
+      text-align: center;
+      color: var(--primary);
+      display: block;
+    }
+
+    .slider-cell {
+      margin-bottom: 10px;
+      gap: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .slider-cell:last-child {
+      margin-bottom: 0;
+    }
+
+    .slider-cell::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 4px;
+      text-align: left;
+    }
+
+    .slider-cell strong {
+      font-size: 1rem;
+      padding: 4px 10px;
+      min-width: 50px;
+      align-self: center;
+    }
+
+    .slider-cell input[type="range"] {
+      height: 4px;
+      margin: 2px 0;
+      width: 100%;
+    }
+
+    .slider-cell input[type="range"]::-webkit-slider-thumb {
+      width: 18px;
       height: 18px;
     }
 
+    .slider-cell input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+    }
+
+    .card {
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+    }
+
+    .card h2::before {
+      width: 4px;
+      height: 22px;
+    }
+
     label {
-      font-size: 0.7rem;
-      margin-bottom: 4px;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
     }
 
     input[type="number"],
     select {
-      padding: 10px 12px;
-      font-size: 0.9rem;
-      min-height: 44px;
+      padding: 14px 16px;
+      font-size: 1rem;
+      min-height: 50px;
     }
 
     .row {
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .input-group {
-      margin-bottom: 10px;
+      margin-bottom: 16px;
     }
 
     .result-box,
     .target-result {
-      padding: 12px;
+      padding: 20px;
     }
 
     .result-box .lsi-value {
-      font-size: 2rem;
+      font-size: 2.5rem;
     }
 
     .result-box .lsi-status {
-      font-size: 0.9rem;
+      font-size: 1.1rem;
     }
 
     .result-box .lsi-details {
-      font-size: 0.7rem;
+      font-size: 0.9rem;
     }
 
     .target-result .target-lsi {
-      font-size: 1.5rem;
+      font-size: 2rem;
     }
 
     .target-result .target-status {
-      font-size: 0.85rem;
+      font-size: 1rem;
     }
 
     .bar {
-      height: 24px;
+      height: 32px;
     }
 
     .bar-indicator {
-      width: 3px;
-      height: 32px;
+      width: 4px;
+      height: 40px;
       top: -4px;
     }
 
     .bar-labels {
-      font-size: 0.65rem;
-      margin-top: 4px;
+      font-size: 0.8rem;
+      margin-top: 8px;
     }
 
     .bar-container {
-      margin: 12px 0;
+      margin: 16px 0;
     }
 
     .slider-group {
-      margin-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .slider-label {
+      margin-bottom: 8px;
     }
 
     .slider-label span {
-      font-size: 0.7rem;
+      font-size: 0.95rem;
     }
 
     .slider-label strong {
-      font-size: 0.9rem;
+      font-size: 1.1rem;
+      padding: 4px 12px;
+      min-width: 50px;
     }
 
     input[type="range"] {
-      height: 6px;
-      padding: 8px 0;
+      height: 8px;
+      padding: 12px 0;
+      margin: 8px 0;
     }
 
     input[type="range"]::-webkit-slider-thumb {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
     }
 
     input[type="range"]::-moz-range-thumb {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
     }
 
     .info-badge {
-      font-size: 0.65rem;
-      padding: 3px 8px;
-      margin-top: 6px;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      margin-top: 8px;
     }
 
     .dosage-item {
-      padding: 12px;
-      margin-bottom: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
     }
 
     .dosage-item h4 {
-      font-size: 0.85rem;
-      margin-bottom: 6px;
+      font-size: 1rem;
+      margin-bottom: 8px;
     }
 
     .dosage-amount {
-      font-size: 1.2rem;
+      font-size: 1.5rem;
     }
 
     .dosage-note {
-      font-size: 0.7rem;
+      font-size: 0.85rem;
     }
 
     .header h1 {
-      font-size: 1.1rem;
+      font-size: 1.3rem;
     }
 
     .header p {
-      font-size: 0.7rem;
+      font-size: 0.85rem;
     }
 
     .header {
-      padding: 12px 8px;
+      padding: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .app {
-      padding: 8px 6px;
+      padding: 14px;
     }
 
     .calculator-grid {
-      gap: 8px;
+      gap: 14px;
     }
 
     .card {
-      padding: 12px;
+      padding: 18px;
     }
 
     .card h2 {
-      font-size: 0.85rem;
-      margin-bottom: 12px;
+      font-size: 1.15rem;
+      margin-bottom: 16px;
     }
 
     .card h2::before {
-      width: 2px;
+      width: 3px;
+      height: 20px;
+    }
+
+    .chemistry-row {
+      padding: 14px 0;
+      margin-bottom: 16px;
+    }
+
+    .parameter-label {
+      font-size: 1rem;
+      padding: 0;
+      margin-bottom: 14px;
+    }
+
+    .slider-cell {
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+
+    .slider-cell::before {
+      font-size: 0.75rem;
+      margin-bottom: 3px;
+    }
+
+    .slider-cell strong {
+      font-size: 0.95rem;
+      padding: 3px 8px;
+      min-width: 45px;
+    }
+
+    .slider-cell input[type="range"] {
+      height: 4px;
+      margin: 2px 0;
+      width: 100%;
+    }
+
+    .slider-cell input[type="range"]::-webkit-slider-thumb {
+      width: 16px;
+      height: 16px;
+    }
+
+    .slider-cell input[type="range"]::-moz-range-thumb {
+      width: 16px;
       height: 16px;
     }
 
     label {
-      font-size: 0.7rem;
+      font-size: 0.95rem;
     }
 
     input[type="number"],
     select {
-      padding: 8px 10px;
-      font-size: 0.8rem;
-      min-height: 42px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      min-height: 48px;
     }
 
     .result-box .lsi-value {
-      font-size: 1.8rem;
+      font-size: 2.2rem;
     }
 
     .result-box .lsi-status {
-      font-size: 0.85rem;
+      font-size: 1rem;
     }
 
     .result-box .lsi-details {
-      font-size: 0.7rem;
+      font-size: 0.85rem;
     }
 
     .target-result .target-lsi {
-      font-size: 1.4rem;
+      font-size: 1.8rem;
     }
 
     .target-result .target-status {
-      font-size: 0.8rem;
+      font-size: 0.95rem;
     }
 
     .bar {
-      height: 28px;
+      height: 30px;
     }
 
     .bar-indicator {
-      width: 3px;
-      height: 36px;
+      width: 4px;
+      height: 38px;
       top: -4px;
     }
 
     .bar-labels span {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       line-height: 1.3;
     }
 
     .slider-label span {
-      font-size: 0.7rem;
+      font-size: 0.9rem;
     }
 
     .slider-label strong {
-      font-size: 0.85rem;
-      padding: 3px 8px;
+      font-size: 1.05rem;
+      padding: 4px 10px;
+      min-width: 48px;
     }
 
     .slider-group {
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
 
     .header h1 {
-      font-size: 1.05rem;
+      font-size: 1.2rem;
     }
 
     .header p {
-      font-size: 0.7rem;
-    }
-
-    .dosage-item h4 {
       font-size: 0.8rem;
     }
 
+    .dosage-item h4 {
+      font-size: 0.95rem;
+    }
+
     .dosage-amount {
-      font-size: 1.1rem;
+      font-size: 1.4rem;
+    }
+
+    .dosage-note {
+      font-size: 0.8rem;
     }
   }
 
@@ -632,6 +762,83 @@
     }
   }
 
+  /* Chemistry Grid Layout */
+  .chemistry-grid-header {
+    display: grid;
+    grid-template-columns: 1fr 150px 1fr;
+    gap: 24px;
+    padding: 12px 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--primary);
+  }
+
+  .header-current,
+  .header-target {
+    font-size: 0.85rem;
+  }
+
+  .header-parameter {
+    min-width: 150px;
+    white-space: nowrap;
+  }
+
+  .chemistry-row {
+    display: grid;
+    grid-template-columns: 1fr 150px 1fr;
+    gap: 24px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .chemistry-row:last-child {
+    border-bottom: none;
+  }
+
+  .parameter-label {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text);
+    min-width: 150px;
+    padding: 0 12px;
+    white-space: nowrap;
+  }
+
+  .slider-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .slider-cell strong {
+    font-size: 1rem;
+    color: var(--primary);
+    padding: 4px 10px;
+    background: var(--primary-glow);
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 700;
+    cursor: text;
+    min-width: 45px;
+    align-self: center;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  .slider-cell strong:focus {
+    outline: 2px solid var(--primary);
+    background: #fff;
+  }
+
+  .slider-cell input[type="range"] {
+    width: 100%;
+  }
+
   input[type="range"] {
     width: 100%;
     height: 6px;
@@ -891,88 +1098,137 @@
     </div>
   </div>
 
-  <div class="calculator-grid">
-    <!-- Current Pool Chemistry -->
-    <div class="card">
-      <h2>Current Pool Chemistry</h2>
+  <!-- Chemistry Grid -->
+  <div class="card">
+    <div class="chemistry-grid-header">
+      <div class="header-current">Current</div>
+      <div class="header-parameter">Parameter</div>
+      <div class="header-target">Target</div>
+    </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current pH</span>
+    <!-- pH Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentPhValue" contenteditable="true" data-slider="ph">7.5</strong>
+        <input id="ph" type="range" min="6.5" max="8.5" step="0.1" value="7.5">
       </div>
-      <input id="ph" type="range" min="6.5" max="8.5" step="0.1" value="7.5">
+      <div class="parameter-label">pH</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetPhValue" contenteditable="true" data-slider="targetPh">7.4</strong>
+        <input id="targetPh" type="range" min="7.0" max="8.0" step="0.1" value="7.4">
+      </div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current Temperature (<span id="currentTempUnitLabel">°F</span>)</span>
+    <!-- Temperature Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentTempValue" contenteditable="true" data-slider="temp">80</strong>
+        <input id="temp" type="range" min="50" max="100" step="0.5" value="80">
       </div>
-      <input id="temp" type="range" min="50" max="100" step="0.5" value="80">
+      <div class="parameter-label">Temp (<span id="tempUnitLabel">°F</span>)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetTempValue" contenteditable="true" data-slider="targetTemp">80</strong>
+        <input id="targetTemp" type="range" min="50" max="100" step="0.5" value="80">
+      </div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current Calcium Hardness (ppm)</span>
+    <!-- Calcium Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentCalciumValue" contenteditable="true" data-slider="calcium">300</strong>
+        <input id="calcium" type="range" min="150" max="1000" step="10" value="300">
       </div>
-      <input id="calcium" type="range" min="150" max="1000" step="10" value="300">
+      <div class="parameter-label">Calcium (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetCalciumValue" contenteditable="true" data-slider="targetCalcium">225</strong>
+        <input id="targetCalcium" type="range" min="150" max="1000" step="10" value="225">
+      </div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current Total Alkalinity (ppm)</span>
+    <!-- Alkalinity Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentAlkValue" contenteditable="true" data-slider="alk">90</strong>
+        <input id="alk" type="range" min="0" max="300" step="5" value="90">
       </div>
-      <input id="alk" type="range" min="0" max="300" step="5" value="90">
+      <div class="parameter-label">Alkalinity (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetAlkValue" contenteditable="true" data-slider="targetAlk">100</strong>
+        <input id="targetAlk" type="range" min="60" max="180" step="5" value="100">
+      </div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current CYA (ppm)</span>
+    <!-- CYA Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentCyaValue" contenteditable="true" data-slider="cya">30</strong>
+        <input id="cya" type="range" min="0" max="200" step="5" value="30">
       </div>
-      <input id="cya" type="range" min="0" max="200" step="5" value="30">
+      <div class="parameter-label">CYA (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetCyaValue" contenteditable="true" data-slider="targetCya">30</strong>
+        <input id="targetCya" type="range" min="0" max="200" step="5" value="30">
+      </div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current Free Chlorine (ppm)</span>
+    <!-- Chlorine Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentChlorineValue" contenteditable="true" data-slider="chlorine">3.0</strong>
+        <input id="chlorine" type="range" min="0" max="10" step="0.1" value="3">
       </div>
-      <input id="chlorine" type="range" min="0" max="10" step="0.1" value="3">
+      <div class="parameter-label">Free Chlorine (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetFcValue" contenteditable="true" data-slider="targetFc">3.0</strong>
+        <input id="targetFc" type="range" min="0" max="10" step="0.1" value="3">
+      </div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current Borates (ppm)</span>
+    <!-- Borates Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentBorateValue" contenteditable="true" data-slider="borate">0</strong>
+        <input id="borate" type="range" min="0" max="100" step="5" value="0">
       </div>
-      <input id="borate" type="range" min="0" max="100" step="5" value="0">
+      <div class="parameter-label">Borates (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetBorateValue" contenteditable="true" data-slider="targetBorate">0</strong>
+        <input id="targetBorate" type="range" min="0" max="100" step="5" value="0">
+      </div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current Salt (ppm)</span>
+    <!-- Salt Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentSaltValue" contenteditable="true" data-slider="salt">0</strong>
+        <input id="salt" type="range" min="0" max="5000" step="100" value="0">
       </div>
-      <input id="salt" type="range" min="0" max="5000" step="100" value="0">
+      <div class="parameter-label">Salt (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetSaltValue" contenteditable="true" data-slider="targetSalt">0</strong>
+        <input id="targetSalt" type="range" min="0" max="5000" step="100" value="0">
+      </div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Current Base TDS (ppm)</span>
+    <!-- TDS Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
         <strong id="currentTdsValue" contenteditable="true" data-slider="tdsBase">1000</strong>
+        <input id="tdsBase" type="range" min="0" max="5000" step="100" value="1000">
       </div>
-      <input id="tdsBase" type="range" min="0" max="5000" step="100" value="1000">
+      <div class="parameter-label">Base TDS (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetTdsValue" contenteditable="true" data-slider="targetTds">1000</strong>
+        <input id="targetTds" type="range" min="0" max="5000" step="100" value="1000">
+      </div>
     </div>
+  </div>
 
-    <!-- Current LSI Result -->
-    <div style="margin-top: 12px;">
-      <h2 style="margin: 0 0 10px;">Current LSI Status</h2>
+  <!-- LSI Results Grid -->
+  <div class="calculator-grid">
+    <div class="card">
+      <h2>Current LSI Status</h2>
       <div id="result" class="result-box"></div>
-
       <div class="bar-container">
         <div class="bar">
           <div id="barIndicator" class="bar-indicator"></div>
@@ -984,90 +1240,11 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Target Chemistry -->
-  <div class="card">
-    <h2>Target Chemistry</h2>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target pH (7.2-7.6)</span>
-        <strong id="targetPhValue" contenteditable="true" data-slider="targetPh">7.4</strong>
-      </div>
-      <input id="targetPh" type="range" min="7.0" max="8.0" step="0.1" value="7.4">
-    </div>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target Temp (<span id="targetTempUnitLabel">°F</span>)</span>
-        <strong id="targetTempValue" contenteditable="true" data-slider="targetTemp">80</strong>
-      </div>
-      <input id="targetTemp" type="range" min="50" max="100" step="0.5" value="80">
-    </div>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target Calcium (200-250 ppm)</span>
-        <strong id="targetCalciumValue" contenteditable="true" data-slider="targetCalcium">225</strong>
-      </div>
-      <input id="targetCalcium" type="range" min="150" max="1000" step="10" value="225">
-    </div>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target Alkalinity (80-120 ppm)</span>
-        <strong id="targetAlkValue" contenteditable="true" data-slider="targetAlk">100</strong>
-      </div>
-      <input id="targetAlk" type="range" min="60" max="180" step="5" value="100">
-    </div>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target CYA (ppm)</span>
-        <strong id="targetCyaValue" contenteditable="true" data-slider="targetCya">30</strong>
-      </div>
-      <input id="targetCya" type="range" min="0" max="200" step="5" value="30">
-    </div>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target Free Chlorine (ppm)</span>
-        <strong id="targetFcValue" contenteditable="true" data-slider="targetFc">3.0</strong>
-      </div>
-      <input id="targetFc" type="range" min="0" max="10" step="0.1" value="3">
-    </div>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target Borates (ppm)</span>
-        <strong id="targetBorateValue" contenteditable="true" data-slider="targetBorate">0</strong>
-      </div>
-      <input id="targetBorate" type="range" min="0" max="100" step="5" value="0">
-    </div>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target Salt (ppm)</span>
-        <strong id="targetSaltValue" contenteditable="true" data-slider="targetSalt">0</strong>
-      </div>
-      <input id="targetSalt" type="range" min="0" max="5000" step="100" value="0">
-    </div>
-
-    <div class="slider-group">
-      <div class="slider-label">
-        <span>Target Base TDS (ppm)</span>
-        <strong id="targetTdsValue" contenteditable="true" data-slider="targetTds">1000</strong>
-      </div>
-      <input id="targetTds" type="range" min="0" max="5000" step="100" value="1000">
-    </div>
-
-    <!-- Projected LSI Result -->
-    <div style="margin-top: 12px;">
-      <h2 style="margin: 0 0 10px;">Target LSI</h2>
+    <div class="card">
+      <h2>Target LSI</h2>
       <div id="targetResult" class="target-result"></div>
     </div>
-  </div>
   </div>
 
   <!-- Dosage Recommendations -->
@@ -1156,8 +1333,19 @@ function calculateRecommendedFC(cya, borates) {
 }
 
 /* Dosage Calculations (Orenda-based) - Calculate what's needed to reach target values */
-function calculateDosages(currentPh, targetPh, currentAlk, targetAlk, currentCH, targetCH, poolVolume, currentLSI, targetLSI, currentFC, targetFC, cya, borates) {
+function calculateDosages(currentPh, targetPh, currentAlk, targetAlk, currentCH, targetCH, poolVolume, currentLSI, targetLSI, currentFC, targetFC, currentCya, targetCya, currentBorates, targetBorates, currentSalt, targetSalt, currentTds, targetTds, currentTemp, targetTemp) {
   const dosages = [];
+
+  // Temperature Note
+  const tempDiff = targetTemp - currentTemp;
+  if (Math.abs(tempDiff) > 2) {
+    dosages.push({
+      product: "Temperature Adjustment (Heater/Cooler)",
+      amount: "N/A",
+      reason: `Adjust temperature from ${currentTemp.toFixed(1)}° to ${targetTemp.toFixed(1)}°`,
+      note: "Temperature cannot be adjusted chemically. Use pool heater to raise or allow natural cooling to lower."
+    });
+  }
 
   // pH Adjustment
   const phDiff = targetPh - currentPh;
@@ -1231,20 +1419,46 @@ function calculateDosages(currentPh, targetPh, currentAlk, targetAlk, currentCH,
       });
     } else {
       // Can't chemically lower CH - only recommend drain/refill if CYA > 100 AND CH > 500
-      if (cya > 100 && currentCH > 500) {
+      if (currentCya > 100 && currentCH > 500) {
         const gallonsToReplace = Math.ceil((Math.abs(chDiff) / currentCH) * poolVolume);
         dosages.push({
           product: "Water Replacement (Dilution)",
           amount: `${gallonsToReplace} gallons`,
-          reason: `Lower CH from ${currentCH} to ${targetCH} ppm (CYA is ${cya} ppm)`,
+          reason: `Lower CH from ${currentCH} to ${targetCH} ppm (CYA is ${currentCya} ppm)`,
           note: "Drain and refill with fresh water. This will also lower CYA. Cannot chemically lower calcium."
         });
       }
-      // Otherwise, don't recommend anything for lowering calcium
     }
   }
 
-  // Free Chlorine Adjustment (use target FC directly)
+  // CYA (Cyanuric Acid) Adjustment
+  const cyaDiff = targetCya - currentCya;
+  if (Math.abs(cyaDiff) > 5) {
+    if (cyaDiff > 0) {
+      // Need to raise CYA - use Cyanuric Acid
+      // Guideline: ~13 oz per 10,000 gallons raises CYA by ~10 ppm
+      const ozPer10k = (Math.abs(cyaDiff) / 10) * 13;
+      const totalOz = (ozPer10k * poolVolume) / 10000;
+      dosages.push({
+        product: "Cyanuric Acid (Stabilizer)",
+        amount: formatDosage(totalOz, false),
+        reason: `Raise CYA from ${currentCya} to ${targetCya} ppm`,
+        note: "Dissolve in warm water first. Add slowly through skimmer or distribute around pool. Takes 24-48 hours to fully dissolve."
+      });
+    } else {
+      // Need to lower CYA - can only drain/refill
+      const percentToReplace = (Math.abs(cyaDiff) / currentCya) * 100;
+      const gallonsToReplace = Math.ceil((percentToReplace / 100) * poolVolume);
+      dosages.push({
+        product: "Water Replacement (Dilution)",
+        amount: `${gallonsToReplace} gallons (~${percentToReplace.toFixed(0)}% of pool)`,
+        reason: `Lower CYA from ${currentCya} to ${targetCya} ppm`,
+        note: "Drain and refill with fresh water. Cannot chemically lower CYA. This will also lower other dissolved solids."
+      });
+    }
+  }
+
+  // Free Chlorine Adjustment
   const fcDiff = targetFC - currentFC;
   if (Math.abs(fcDiff) > 0.1) {
     if (fcDiff > 0) {
@@ -1267,6 +1481,78 @@ function calculateDosages(currentPh, targetPh, currentAlk, targetAlk, currentCH,
         note: "Leave pool uncovered in sunlight to speed up chlorine dissipation."
       });
     }
+  }
+
+  // Borates Adjustment
+  const boratesDiff = targetBorates - currentBorates;
+  if (Math.abs(boratesDiff) > 5) {
+    if (boratesDiff > 0) {
+      // Need to raise Borates - use Boric Acid or Borax
+      // Guideline: ~75 oz of Boric Acid per 10,000 gallons raises borates by ~50 ppm
+      const ozPer10k = (Math.abs(boratesDiff) / 50) * 75;
+      const totalOz = (ozPer10k * poolVolume) / 10000;
+      dosages.push({
+        product: "Boric Acid (or 20 Mule Team Borax)",
+        amount: formatDosage(totalOz, false),
+        reason: `Raise Borates from ${currentBorates} to ${targetBorates} ppm`,
+        note: "Dissolve in warm water first. Add slowly around pool perimeter. May take several days to fully circulate. Borates help stabilize pH."
+      });
+    } else {
+      // Need to lower Borates - can only drain/refill
+      const percentToReplace = (Math.abs(boratesDiff) / currentBorates) * 100;
+      const gallonsToReplace = Math.ceil((percentToReplace / 100) * poolVolume);
+      dosages.push({
+        product: "Water Replacement (Dilution)",
+        amount: `${gallonsToReplace} gallons (~${percentToReplace.toFixed(0)}% of pool)`,
+        reason: `Lower Borates from ${currentBorates} to ${targetBorates} ppm`,
+        note: "Drain and refill with fresh water. Cannot chemically lower borates."
+      });
+    }
+  }
+
+  // Salt Adjustment
+  const saltDiff = targetSalt - currentSalt;
+  if (Math.abs(saltDiff) > 100) {
+    if (saltDiff > 0) {
+      // Need to raise Salt - add pool salt
+      // Guideline: ~8.3 lbs per 1,000 gallons raises salt by ~1,000 ppm
+      const lbsPerThousand = (Math.abs(saltDiff) / 1000) * 8.3;
+      const totalLbs = (lbsPerThousand * poolVolume) / 1000;
+      const bags = Math.round(totalLbs / 40);
+      dosages.push({
+        product: "Pool Salt (Sodium Chloride)",
+        amount: `${totalLbs.toFixed(1)} lbs (${bags} ${bags === 1 ? 'bag' : 'bags'})`,
+        reason: `Raise Salt from ${currentSalt} to ${targetSalt} ppm`,
+        note: "Add salt directly to pool with pump running. Brush to help dissolve. Takes 24 hours to fully circulate. Wait before testing."
+      });
+    } else {
+      // Need to lower Salt - can only drain/refill
+      const percentToReplace = (Math.abs(saltDiff) / currentSalt) * 100;
+      const gallonsToReplace = Math.ceil((percentToReplace / 100) * poolVolume);
+      dosages.push({
+        product: "Water Replacement (Dilution)",
+        amount: `${gallonsToReplace} gallons (~${percentToReplace.toFixed(0)}% of pool)`,
+        reason: `Lower Salt from ${currentSalt} to ${targetSalt} ppm`,
+        note: "Drain and refill with fresh water. Cannot chemically lower salt. This will also lower TDS."
+      });
+    }
+  }
+
+  // TDS Adjustment
+  const tdsDiff = targetTds - currentTds;
+  if (Math.abs(tdsDiff) > 100) {
+    if (tdsDiff < 0) {
+      // Need to lower TDS - can only drain/refill
+      const percentToReplace = (Math.abs(tdsDiff) / currentTds) * 100;
+      const gallonsToReplace = Math.ceil((percentToReplace / 100) * poolVolume);
+      dosages.push({
+        product: "Water Replacement (Dilution)",
+        amount: `${gallonsToReplace} gallons (~${percentToReplace.toFixed(0)}% of pool)`,
+        reason: `Lower TDS from ${currentTds} to ${targetTds} ppm`,
+        note: "Drain and refill with fresh water. High TDS indicates buildup of dissolved solids. This will also lower other parameters."
+      });
+    }
+    // TDS naturally increases - no recommendation to raise it
   }
 
   return dosages;
@@ -1379,7 +1665,7 @@ function calculate() {
   `;
 
   // Calculate and display dosages
-  const dosages = calculateDosages(ph, tPh, alk, tTA, calcium, tCH, poolVolume, current.lsi, targ.lsi, chlorine, tFC, cya, borate);
+  const dosages = calculateDosages(ph, tPh, alk, tTA, calcium, tCH, poolVolume, current.lsi, targ.lsi, chlorine, tFC, cya, tCYA, borate, tBorate, salt, tSalt, tdsBase, tTds, temp, tTemp);
 
   if (dosages.length === 0) {
     dosageResult.innerHTML = `
@@ -1403,9 +1689,8 @@ function calculate() {
     dosageResult.innerHTML = dosageHtml;
   }
 
-  // Update temp unit labels
-  document.getElementById("currentTempUnitLabel").textContent = unit === "F" ? "°F" : "°C";
-  document.getElementById("targetTempUnitLabel").textContent = unit === "F" ? "°F" : "°C";
+  // Update temp unit label
+  document.getElementById("tempUnitLabel").textContent = unit === "F" ? "°F" : "°C";
 }
 
 /* Initialize */
