@@ -2,7 +2,13 @@
   command = "npm run build"
   publish = "dist"
 
-# SPA fallback (safe even if you’re not using React Router yet)
+# Allow LSIcalc.html to be served directly
+[[redirects]]
+  from = "/LSIcalc.html"
+  to = "/LSIcalc.html"
+  status = 200
+
+# SPA fallback (safe even if you're not using React Router yet)
 [[redirects]]
   from = "/*"
   to = "/index.html"

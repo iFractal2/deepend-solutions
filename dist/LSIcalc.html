@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orenda-Style Pool LSI Calculator (Unofficial) + Targets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+      --accent-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      --blue-glow: rgba(42, 82, 152, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.95);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 8px 32px rgba(30, 60, 114, 0.2);
+      --shadow-lg: 0 16px 48px rgba(30, 60, 114, 0.3);
+      --input-border: #cbd5e0;
+      --input-focus: #2a5298;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 25%, #2c5364 50%, #1e3c72 75%, #2a5298 100%);
+      background-size: 400% 400%;
+      animation: oceanWave 20s ease infinite;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      color: #2d3748;
+    }
+
+    @keyframes oceanWave {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .app {
+      max-width: 620px;
+      margin: 0 auto;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 40px 36px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--glass-border);
+      animation: fadeInUp 0.7s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+      text-align: center;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 28px 0 16px;
+      color: #1e3c72;
+      padding-bottom: 8px;
+      border-bottom: 2px solid rgba(42, 82, 152, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h2::before {
+      content: "";
+      width: 4px;
+      height: 20px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
+
+    .sub {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #718096;
+      margin-bottom: 24px;
+      line-height: 1.5;
+      padding: 12px 16px;
+      background: rgba(42, 82, 152, 0.05);
+      border-radius: 12px;
+      border-left: 3px solid #2a5298;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: #4a5568;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid var(--input-border);
+      font-size: 0.95rem;
+      background: #ffffff;
+      color: #2d3748;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    input:focus, select:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
+      transform: translateY(-2px);
+    }
+
+    input:hover, select:hover {
+      border-color: #a0aec0;
+    }
+
+    .row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .row > div {
+      flex: 1;
+    }
+
+    .result {
+      margin-top: 24px;
+      padding: 24px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(30, 60, 114, 0.05) 0%, rgba(42, 82, 152, 0.08) 100%);
+      border: 2px solid rgba(42, 82, 152, 0.2);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      box-shadow: var(--shadow-sm);
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result strong {
+      font-size: 1.4rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
+
+    .status-balanced {
+      color: #2f855a;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .status-corrosive {
+      color: #c53030;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .status-scaling {
+      color: #c05621;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    /* LSI Bar */
+    .bar-container {
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(42, 82, 152, 0.15);
+    }
+
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #4a5568;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bar {
+      position: relative;
+      height: 20px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: linear-gradient(90deg,
+        #c53030 0%, #c53030 25%,
+        #38a169 40%, #38a169 60%,
+        #dd6b20 75%, #dd6b20 100%);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .bar-indicator {
+      position: absolute;
+      top: -6px;
+      width: 4px;
+      height: 32px;
+      background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .bar-indicator::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Target Sliders */
+    h2:has(+ .small) {
+      margin-bottom: 8px;
+    }
+
+    .small {
+      font-size: 0.85rem;
+      color: #718096;
+      line-height: 1.6;
+      margin: 8px 0 16px;
+      padding: 12px 14px;
+      background: rgba(42, 82, 152, 0.04);
+      border-radius: 10px;
+      border-left: 3px solid rgba(42, 82, 152, 0.3);
+    }
+
+    .target-row {
+      margin: 20px 0;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(42, 82, 152, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .target-row:hover {
+      background: rgba(255, 255, 255, 0.7);
+      border-color: rgba(42, 82, 152, 0.25);
+      transform: translateX(4px);
+    }
+
+    .target-label-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #2d3748;
+    }
+
+    .target-value {
+      font-size: 1.1rem;
+      color: #1e3c72;
+      font-weight: 700;
+      min-width: 80px;
+      text-align: right;
+      padding: 4px 12px;
+      background: rgba(42, 82, 152, 0.1);
+      border-radius: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-track {
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, rgba(42, 82, 152, 0.2) 0%, rgba(42, 82, 152, 0.4) 100%);
+      border-radius: 999px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--blue-glow);
+      transition: all 0.2s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 6px 16px var(--blue-glow);
+    }
+
+    input[type="range"]::-moz-range-track {
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, rgba(42, 82, 152, 0.2) 0%, rgba(42, 82, 152, 0.4) 100%);
+      border-radius: 999px;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      background: var(--primary-gradient);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--blue-glow);
+      transition: all 0.2s ease;
+    }
+
+    input[type="range"]::-moz-range-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 6px 16px var(--blue-glow);
+    }
+
+    .note {
+      margin-top: 28px;
+      padding: 20px;
+      font-size: 0.875rem;
+      color: #4a5568;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+      border-radius: 16px;
+      border: 2px solid rgba(42, 82, 152, 0.15);
+      line-height: 1.7;
+      box-shadow: var(--shadow-sm);
+    }
+
+    #targetResult {
+      background: linear-gradient(135deg, rgba(56, 161, 105, 0.08) 0%, rgba(56, 161, 105, 0.12) 100%);
+      border-color: rgba(56, 161, 105, 0.3);
+    }
+
+    @media (max-width: 600px) {
+      .app {
+        padding: 32px 24px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .target-row:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>LSI Calculator</h1>
+    <div class="sub">Stop by one of our Poolwerx locations and get a FREE water test for a more accurate reading</div>
+
+    <h2>Water Balance Inputs (Current)</h2>
+
+    <div class="row">
+      <div>
+        <label for="ph">pH</label>
+        <input id="ph" type="number" step="0.01" value="7.5" />
+      </div>
+      <div>
+        <label for="temp">Water Temp</label>
+        <input id="temp" type="number" step="0.1" value="80" />
+      </div>
+      <div>
+        <label for="unit">Unit</label>
+        <select id="unit">
+          <option value="F" selected>°F</option>
+          <option value="C">°C</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="calcium">Calcium Hardness (ppm as CaCO₃)</label>
+        <input id="calcium" type="number" step="1" value="300" />
+      </div>
+      <div>
+        <label for="alk">Total Alkalinity (ppm as CaCO₃)</label>
+        <input id="alk" type="number" step="1" value="90" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="cya">Stabilizer CYA (ppm)</label>
+        <input id="cya" type="number" step="1" value="30" />
+      </div>
+      <div>
+        <label for="borate">Borates (ppm)</label>
+        <input id="borate" type="number" step="1" value="0" />
+      </div>
+    </div>
+
+    <h2>Dissolved Solids</h2>
+    <div class="row">
+      <div>
+        <label for="salt">Salt (ppm)</label>
+        <input id="salt" type="number" step="10" value="0" />
+      </div>
+      <div>
+        <label for="tdsBase">Base TDS (ppm)</label>
+        <input id="tdsBase" type="number" step="10" value="1000" />
+      </div>
+    </div>
+    <div class="small">
+      Total TDS used for LSI = Base TDS + Salt (this mimics common LSI practice).
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <div class="bar-container">
+      <div class="bar-labels">
+        <span>Corrosive</span>
+        <span>Balanced</span>
+        <span>Scaling</span>
+      </div>
+      <div class="bar">
+        <div id="barIndicator" class="bar-indicator"></div>
+      </div>
+      <div class="bar-labels">
+        <span>-1.0</span><span>0.0</span><span>+1.0</span>
+      </div>
+    </div>
+
+    <!-- TARGET SLIDERS -->
+    <h2>Target Adjustments (What-If)</h2>
+    <div class="small">
+      Use these sliders to see how changing pH, temperature, alkalinity, or calcium hardness would affect LSI.
+      CYA, borates, and salt stay the same (based on your current inputs).
+    </div>
+
+    <div class="target-row">
+      <div class="target-label-line">
+        <span>Target pH</span>
+        <span class="target-value" id="targetPhValue">7.50</span>
+      </div>
+      <input id="targetPh" type="range" min="6.8" max="8.2" step="0.01" value="7.5" />
+    </div>
+
+    <div class="target-row">
+      <div class="target-label-line">
+        <span>Target Temp (<span id="targetTempUnitLabel">°F</span>)</span>
+        <span class="target-value" id="targetTempValue">80</span>
+      </div>
+      <input id="targetTemp" type="range" min="50" max="100" step="0.5" value="80" />
+    </div>
+
+    <div class="target-row">
+      <div class="target-label-line">
+        <span>Target Calcium Hardness (ppm)</span>
+        <span class="target-value" id="targetCalciumValue">300</span>
+      </div>
+      <input id="targetCalcium" type="range" min="100" max="800" step="10" value="300" />
+    </div>
+
+    <div class="target-row">
+      <div class="target-label-line">
+        <span>Target Total Alkalinity (ppm)</span>
+        <span class="target-value" id="targetAlkValue">90</span>
+      </div>
+      <input id="targetAlk" type="range" min="40" max="200" step="5" value="90" />
+    </div>
+
+    <div id="targetResult" class="result" style="margin-top:10px;"></div>
+
+    <div class="note">
+      <strong>LSI between about -0.30 and +0.30 is generally considered "balanced."</strong><br><br>
+      This calculator uses an <strong>adjusted (carbonate) alkalinity</strong> similar to Orenda's approach:
+      Total Alkalinity minus a fraction of CYA and borates, then plugged into the standard LSI formula.
+      Values are approximations for educational and field-use purposes, not a replacement for professional design.
+    </div>
+  </div>
+
+  <script>
+    function log10(x) {
+      return Math.log(x) / Math.LN10;
+    }
+
+    function computeLsi(ph, tempVal, unit, calcium, alk, cya, borate, salt, tdsBase) {
+      // Convert F to C for LSI temperature term
+      let tempC = tempVal;
+      if (unit === "F") {
+        tempC = (tempVal - 32) * 5/9;
+      }
+
+      const tds = Math.max((tdsBase || 0) + (salt || 0), 100);
+
+      // Adjusted alkalinity
+      let adjAlk = alk - (cya * 0.33) - (borate * 0.5);
+      if (adjAlk < 1) adjAlk = 1;
+
+      const A = (log10(tds) - 1) / 10;
+      const B = -13.12 * log10(tempC + 273) + 34.55;
+      const C = log10(calcium) - 0.4;
+      const D = log10(adjAlk);
+
+      const pHs = (9.3 + A + B) - (C + D);
+      const lsi = ph - pHs;
+
+      return { lsi, pHs, adjAlk, tds };
+    }
+
+    function describeLsi(lsi) {
+      if (lsi < -0.3) {
+        return {
+          text: "Water is corrosive / aggressive (low LSI).",
+          cls: "status-corrosive",
+          suggestion: "Consider slightly raising pH, alkalinity, or calcium hardness (or reducing dilution) to bring LSI closer to zero."
+        };
+      } else if (lsi > 0.3) {
+        return {
+          text: "Water is scale-forming (high LSI).",
+          cls: "status-scaling",
+          suggestion: "Consider slightly lowering pH, or avoiding further increases in calcium hardness, to bring LSI closer to zero."
+        };
+      } else {
+        return {
+          text: "Water is approximately balanced.",
+          cls: "status-balanced",
+          suggestion: "You're in the balanced zone. Monitor regularly and adjust gently if you see trends up or down."
+        };
+      }
+    }
+
+    function updateTargetLabels() {
+      const targetPh    = parseFloat(document.getElementById("targetPh").value);
+      const targetTemp  = parseFloat(document.getElementById("targetTemp").value);
+      const targetCal   = parseFloat(document.getElementById("targetCalcium").value);
+      const targetAlk   = parseFloat(document.getElementById("targetAlk").value);
+      const unit        = document.getElementById("unit").value;
+
+      document.getElementById("targetPhValue").textContent = targetPh.toFixed(2);
+      document.getElementById("targetTempValue").textContent = targetTemp.toFixed(1);
+      document.getElementById("targetCalciumValue").textContent = targetCal.toFixed(0);
+      document.getElementById("targetAlkValue").textContent = targetAlk.toFixed(0);
+
+      document.getElementById("targetTempUnitLabel").textContent = unit === "F" ? "°F" : "°C";
+    }
+
+    function syncTargetsToCurrent() {
+      // When main fields change, pull targets toward them if user hasn't moved them much
+      const ph      = parseFloat(document.getElementById("ph").value);
+      const temp    = parseFloat(document.getElementById("temp").value);
+      const calcium = parseFloat(document.getElementById("calcium").value);
+      const alk     = parseFloat(document.getElementById("alk").value);
+
+      if (!isNaN(ph))      document.getElementById("targetPh").value      = ph;
+      if (!isNaN(temp))    document.getElementById("targetTemp").value    = temp;
+      if (!isNaN(calcium)) document.getElementById("targetCalcium").value = calcium;
+      if (!isNaN(alk))     document.getElementById("targetAlk").value     = alk;
+
+      updateTargetLabels();
+    }
+
+    function calculate() {
+      const ph       = parseFloat(document.getElementById("ph").value);
+      const temp     = parseFloat(document.getElementById("temp").value);
+      const unit     = document.getElementById("unit").value;
+      const calcium  = parseFloat(document.getElementById("calcium").value);
+      const alk      = parseFloat(document.getElementById("alk").value);
+      const cya      = parseFloat(document.getElementById("cya").value) || 0;
+      const borate   = parseFloat(document.getElementById("borate").value) || 0;
+      const salt     = parseFloat(document.getElementById("salt").value) || 0;
+      const tdsBase  = parseFloat(document.getElementById("tdsBase").value) || 0;
+
+      const resultDiv    = document.getElementById("result");
+      const indicator    = document.getElementById("barIndicator");
+      const targetResult = document.getElementById("targetResult");
+
+      if ([ph, temp, calcium, alk].some(v => isNaN(v) || v <= 0)) {
+        resultDiv.innerHTML = "⚠️ Please enter valid, positive numbers for pH, temperature, calcium hardness, and alkalinity.";
+        indicator.style.left = "50%";
+        targetResult.innerHTML = "Adjust targets after entering valid current readings.";
+        return;
+      }
+
+      // CURRENT LSI
+      const current = computeLsi(ph, temp, unit, calcium, alk, cya, borate, salt, tdsBase);
+      const currentDesc = describeLsi(current.lsi);
+
+      resultDiv.innerHTML =
+        "<strong>Current LSI: " + current.lsi.toFixed(2) + "</strong><br>" +
+        "<span class='" + currentDesc.cls + "'>" + currentDesc.text + "</span><br><br>" +
+        "pHs (saturation pH): <strong>" + current.pHs.toFixed(2) + "</strong><br>" +
+        "Adjusted (carbonate) alkalinity used: <strong>" + current.adjAlk.toFixed(0) + " ppm</strong><br>" +
+        "Total TDS used: <strong>" + current.tds.toFixed(0) + " ppm</strong><br><br>" +
+        "<em>" + currentDesc.suggestion + "</em>";
+
+      // Indicator bar: map from [-1, +1] to 0–100%
+      let displayLsi = Math.max(-1, Math.min(1, current.lsi));
+      const pct = ((displayLsi + 1) / 2) * 100;
+      indicator.style.left = pct + "%";
+
+      // TARGET LSI (WHAT-IF)
+      updateTargetLabels();
+      const targetPh    = parseFloat(document.getElementById("targetPh").value);
+      const targetTemp  = parseFloat(document.getElementById("targetTemp").value);
+      const targetCal   = parseFloat(document.getElementById("targetCalcium").value);
+      const targetAlk   = parseFloat(document.getElementById("targetAlk").value);
+
+      const target = computeLsi(targetPh, targetTemp, unit, targetCal, targetAlk, cya, borate, salt, tdsBase);
+      const targetDesc = describeLsi(target.lsi);
+
+      targetResult.innerHTML =
+        "<strong>Target / What-If LSI: " + target.lsi.toFixed(2) + "</strong><br>" +
+        "<span class='" + targetDesc.cls + "'>" + targetDesc.text + "</span><br><br>" +
+        "Using Target pH: <strong>" + targetPh.toFixed(2) + "</strong>, " +
+        "Target Temp: <strong>" + targetTemp.toFixed(1) + "°" + unit + "</strong>, " +
+        "Target CH: <strong>" + targetCal.toFixed(0) + " ppm</strong>, " +
+        "Target TA: <strong>" + targetAlk.toFixed(0) + " ppm</strong>.<br><br>" +
+        "<em>" + targetDesc.suggestion + "</em>";
+    }
+
+    // Hook up events
+    document.querySelectorAll("#ph, #temp, #unit, #calcium, #alk, #cya, #borate, #salt, #tdsBase")
+      .forEach(el => {
+        el.addEventListener("input", () => {
+          syncTargetsToCurrent();
+          calculate();
+        });
+        el.addEventListener("change", () => {
+          syncTargetsToCurrent();
+          calculate();
+        });
+      });
+
+    document.querySelectorAll("#targetPh, #targetTemp, #targetCalcium, #targetAlk")
+      .forEach(el => {
+        el.addEventListener("input", () => {
+          updateTargetLabels();
+          calculate();
+        });
+        el.addEventListener("change", () => {
+          updateTargetLabels();
+          calculate();
+        });
+      });
+
+    // Initial setup
+    syncTargetsToCurrent();
+    calculate();
+  </script>
+</body>
+</html>
