@@ -110,8 +110,8 @@
 
     .chemistry-grid-header {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: 1.2fr 0.75fr 1.2fr;
+      gap: 10px;
       padding: 12px 0;
       margin-bottom: 12px;
       font-size: 0.85rem;
@@ -130,8 +130,8 @@
 
     .chemistry-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: 1.2fr 0.75fr 1.2fr;
+      gap: 10px;
       align-items: center;
       padding: 12px 0;
       margin: 0;
@@ -148,6 +148,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 100%;
     }
 
     .slider-cell:last-child {
@@ -364,6 +365,8 @@
     .chemistry-row {
       padding: 12px 0;
       margin: 0;
+      grid-template-columns: 1.15fr 0.7fr 1.15fr;
+      gap: 8px;
     }
 
     .parameter-label {
@@ -1130,19 +1133,6 @@
       <div class="header-target">Target</div>
     </div>
 
-    <!-- pH Row -->
-    <div class="chemistry-row">
-      <div class="slider-cell" data-label="Current">
-        <strong id="currentPhValue" contenteditable="true" data-slider="ph">7.5</strong>
-        <input id="ph" type="range" min="6.5" max="8.5" step="0.1" value="7.5">
-      </div>
-      <div class="parameter-label">pH</div>
-      <div class="slider-cell" data-label="Target">
-        <strong id="targetPhValue" contenteditable="true" data-slider="targetPh">7.5</strong>
-        <input id="targetPh" type="range" min="7.0" max="8.0" step="0.1" value="7.5">
-      </div>
-    </div>
-
     <!-- Temperature Row -->
     <div class="chemistry-row">
       <div class="slider-cell" data-label="Current">
@@ -1153,19 +1143,6 @@
       <div class="slider-cell" data-label="Target">
         <strong id="targetTempValue" contenteditable="true" data-slider="targetTemp">80</strong>
         <input id="targetTemp" type="range" min="50" max="100" step="0.5" value="80">
-      </div>
-    </div>
-
-    <!-- Calcium Row -->
-    <div class="chemistry-row">
-      <div class="slider-cell" data-label="Current">
-        <strong id="currentCalciumValue" contenteditable="true" data-slider="calcium">300</strong>
-        <input id="calcium" type="range" min="150" max="1000" step="10" value="300">
-      </div>
-      <div class="parameter-label">Calcium (ppm)</div>
-      <div class="slider-cell" data-label="Target">
-        <strong id="targetCalciumValue" contenteditable="true" data-slider="targetCalcium">300</strong>
-        <input id="targetCalcium" type="range" min="150" max="1000" step="10" value="300">
       </div>
     </div>
 
@@ -1182,16 +1159,16 @@
       </div>
     </div>
 
-    <!-- CYA Row -->
+    <!-- pH Row -->
     <div class="chemistry-row">
       <div class="slider-cell" data-label="Current">
-        <strong id="currentCyaValue" contenteditable="true" data-slider="cya">30</strong>
-        <input id="cya" type="range" min="0" max="200" step="5" value="30">
+        <strong id="currentPhValue" contenteditable="true" data-slider="ph">7.5</strong>
+        <input id="ph" type="range" min="6.5" max="8.5" step="0.1" value="7.5">
       </div>
-      <div class="parameter-label">CYA (ppm)</div>
+      <div class="parameter-label">pH</div>
       <div class="slider-cell" data-label="Target">
-        <strong id="targetCyaValue" contenteditable="true" data-slider="targetCya">30</strong>
-        <input id="targetCya" type="range" min="0" max="200" step="5" value="30">
+        <strong id="targetPhValue" contenteditable="true" data-slider="targetPh">7.5</strong>
+        <input id="targetPh" type="range" min="7.0" max="8.0" step="0.1" value="7.5">
       </div>
     </div>
 
@@ -1205,6 +1182,32 @@
       <div class="slider-cell" data-label="Target">
         <strong id="targetFcValue" contenteditable="true" data-slider="targetFc">3.0</strong>
         <input id="targetFc" type="range" min="0" max="10" step="0.1" value="3">
+      </div>
+    </div>
+
+    <!-- Calcium Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
+        <strong id="currentCalciumValue" contenteditable="true" data-slider="calcium">300</strong>
+        <input id="calcium" type="range" min="150" max="1000" step="10" value="300">
+      </div>
+      <div class="parameter-label">Calcium Hardness (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetCalciumValue" contenteditable="true" data-slider="targetCalcium">300</strong>
+        <input id="targetCalcium" type="range" min="150" max="1000" step="10" value="300">
+      </div>
+    </div>
+
+    <!-- CYA Row -->
+    <div class="chemistry-row">
+      <div class="slider-cell" data-label="Current">
+        <strong id="currentCyaValue" contenteditable="true" data-slider="cya">30</strong>
+        <input id="cya" type="range" min="0" max="200" step="5" value="30">
+      </div>
+      <div class="parameter-label">CYA (ppm)</div>
+      <div class="slider-cell" data-label="Target">
+        <strong id="targetCyaValue" contenteditable="true" data-slider="targetCya">30</strong>
+        <input id="targetCya" type="range" min="0" max="200" step="5" value="30">
       </div>
     </div>
 
@@ -1762,6 +1765,8 @@ document.getElementById("salt").addEventListener("input", function() {
   // Update TDS to match salt if salt is higher
   if (saltValue > currentTds) {
     tdsSlider.value = saltValue;
+    // Recalculate with the corrected TDS
+    calculate();
   }
 });
 
@@ -1774,6 +1779,8 @@ document.getElementById("targetSalt").addEventListener("input", function() {
   // Update TDS to match salt if salt is higher
   if (saltValue > currentTds) {
     tdsSlider.value = saltValue;
+    // Recalculate with the corrected target TDS
+    calculate();
   }
 });
 
@@ -1792,6 +1799,8 @@ document.getElementById("tdsBase").addEventListener("input", function(e) {
     }, 400);
     // Force update display with corrected value
     document.getElementById("currentTdsValue").textContent = saltValue;
+    // Recalculate with locked value
+    calculate();
   }
 });
 
@@ -1810,6 +1819,8 @@ document.getElementById("targetTds").addEventListener("input", function(e) {
     }, 400);
     // Force update display with corrected value
     document.getElementById("targetTdsValue").textContent = saltValue;
+    // Recalculate with locked target value
+    calculate();
   }
 });
 
@@ -1853,7 +1864,12 @@ function processEditedValue(label) {
   if (!slider) return;
 
   // Parse the entered value
-  let newValue = parseFloat(label.textContent.trim());
+  const raw = label.textContent.trim();
+  if (raw === "") {
+    return;
+  }
+
+  let newValue = parseFloat(raw);
 
   // Validate the value
   const min = parseFloat(slider.min);
@@ -1899,6 +1915,13 @@ function processEditedValue(label) {
   // Trigger calculate to update everything
   calculate();
 }
+
+// Live-sync slider when typing in the value pills
+document.querySelectorAll('.slider-cell strong[contenteditable]').forEach(label => {
+  label.addEventListener('input', function() {
+    processEditedValue(this);
+  });
+});
 
 // Initial calculation
 calculate();
