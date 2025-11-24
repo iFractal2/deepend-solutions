@@ -32,7 +32,61 @@ function firstSlideFor(prefix) {
   return arr.length ? arr[0] : null;
 }
 
+/* NEW: get a specific file by its exact base name, regardless of extension */
+function imageByBase(baseName) {
+  const target = String(baseName || "").toLowerCase();
+  for (const [path, url] of Object.entries(imageModules)) {
+    const file = path.split("/").pop() || "";
+    const base = file.replace(/\.[^.]+$/, "").toLowerCase();
+    if (base === target) return url;
+  }
+  return null;
+}
+
+/* ------------------- MICRO-ROUTER (supports typo + hash/query) ------------------- */
+function pathToPage(pathname, hash = window.location.hash, search = window.location.search) {
+  const p = (pathname || "").toLowerCase();
+  const h = (hash || "").toLowerCase();
+  const q = (search || "").toLowerCase();
+  const winterPaths = [
+    "/understanding-winter-chemistry",
+    "/understanding-winter-chemisty", // common typo
+  ];
+  const isWinter =
+    winterPaths.some((s) => p.includes(s) || h.includes(s)) ||
+    q.includes("page=winter") ||
+    q.includes("winter");
+  return isWinter ? "winter" : "home";
+}
+function pageToPath(page) {
+  return page === "winter" ? "/understanding-winter-chemistry" : "/";
+}
+
 export default function App() {
+  // Which page are we on?
+  const [page, setPage] = useState(() => pathToPage(window.location.pathname));
+
+  // Keep Back/Forward and hash-navigation working
+  useEffect(() => {
+    const onPop = () => setPage(pathToPage(window.location.pathname));
+    const onHash = () => setPage(pathToPage(window.location.pathname));
+    window.addEventListener("popstate", onPop);
+    window.addEventListener("hashchange", onHash);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      window.removeEventListener("hashchange", onHash);
+    };
+  }, []);
+
+  // Optional programmatic nav (no visible buttons)
+  const navigate = (to) => {
+    const nextPath = pageToPath(to);
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({ page: to }, "", nextPath);
+    }
+    setPage(to);
+  };
+
   // Fade-on-view observer
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -67,17 +121,17 @@ export default function App() {
   const summaries = useMemo(
     () => ({
       remodeling:
-        "We handle every aspect of pool remodeling, from surface to structure. Our resurfacing and replastering services include standard plaster, quartz, and premium pebble finishes that bring fresh beauty and long-lasting durability to your pool. We also refresh or replace tile and coping, and repair expansion joint mastic to keep your pool deck safe and protected. If your pool has deeper issues, we offer full restructuring to address cracks, leaks, and other structural concerns. We can also upgrade your equipment—pumps, filters, heaters, automation, and lighting—to make your system more efficient and easier to manage. Every remodel is finished with a careful water-balance startup, ensuring your new surface is protected from day one. For a personal touch, we install custom additions such as tanning ledges, water features, and diving boards. These features can transform your pool into a space that’s not just restored, but completely reimagined.",
+        "We handle every aspect of pool remodeling, from surface to structure. Our resurfacing and replastering services include standard plaster, quartz, and premium pebble finishes...",
       tile:
-        "We specialize in waterline and accent tile replacement or repair, using chemical-resistant materials designed to withstand the harsh pool environment. Every job starts with precise substrate preparation and proper expansion control, ensuring a flawless installation that lasts. Whether you’re restoring worn or damaged tile or upgrading to a fresh new look, we provide a wide selection of styles to match your design. We also create custom tile layouts and accents, giving you the freedom to add a unique, personalized touch to your pool. Our attention to detail means your tile isn’t just repaired—it’s transformed into a feature that enhances the beauty and durability of your pool for years to come.",
+        "We specialize in waterline and accent tile replacement or repair, using chemical-resistant materials designed to withstand the harsh pool environment...",
       features:
-        "We install custom water and lighting features that bring movement, sound, and atmosphere to your pool. Options include sheer descents, scuppers, bubblers, deck jets, grottos, rockwork, and accent lighting—all designed with proper flow, balanced noise levels, and long-term durability in mind. These features don’t just add beauty; they create a resort-style experience right in your backyard.",
+        "We install custom water and lighting features that bring movement, sound, and atmosphere to your pool...",
       rails:
-        "We provide core-drilled stainless steel rails and safety fencing to enhance both accessibility and protection around your pool. Every installation uses heavy-duty epoxy anchors and precise, code-compliant placement, ensuring safe, secure, and elegant access that lasts for years.",
+        "We provide core-drilled stainless steel rails and safety fencing to enhance both accessibility and protection around your pool...",
       turf:
-        "We install premium low-maintenance turf systems that transform the space around your pool into a clean, green, and usable surface all year long. Every installation is built on a proper drainage base to prevent standing water and maintain long-term performance. For comfort, we offer cool-touch turf options that stay softer and cooler under the sun, even on the hottest days. To ensure a polished look, we finish with precise edging and resilient seams that hold up against foot traffic, weather, and poolside activity.",
+        "We install premium low-maintenance turf systems that transform the space around your pool into a clean, green, and usable surface all year long...",
       covers:
-        "We offer both automatic and manual pool covers custom-sized to fit your pool perfectly. Covers not only keep debris out but also provide measurable energy savings by reducing heat loss and evaporation. Our systems are built with safety-first hardware to give you peace of mind while protecting your investment.",
+        "We offer both automatic and manual pool covers custom-sized to fit your pool perfectly...",
     }),
     []
   );
@@ -112,6 +166,12 @@ export default function App() {
 
   const handleClose = () => setExpandedKey(null);
 
+  /* --------- PAGE SWITCH --------- */
+  if (page === "winter") {
+    return <WinterChemistryPage />;
+  }
+
+  /* --------- HOME PAGE (original content) --------- */
   return (
     <div style={{ fontFamily: "Oswald, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", color: "#1a2b3c", margin: 0 }}>
       <style>{css}</style>
@@ -139,21 +199,17 @@ export default function App() {
         <img className="hero-img" src="/images/topimage.png" alt="Deep End Pool Solutions" />
         <div className="hero-subtitle">Serving the Dallas/Fort Worth Market</div>
 
-        {/* Yellow strip with financing line ABOVE the title */}
+        {/* Yellow strip with LSI calculator button ABOVE the title */}
         <div className="hero-strip">
           <div className="container">
-            <div className="strip-subtitle">
-              Financing possible through Lyon Financial<br />
-              <a
-                href="https://www.lyonfinancial.net/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Apply today with Lyon Financial"
-              >
-                Apply today!
-              </a>
-            </div>
-            <div className="strip-title">Here’s what we do…</div>
+            <a
+              href="/LSIcalc.html"
+              className="lsi-calc-button"
+              aria-label="Calculate your pool's LSI"
+            >
+              Calculate Your Pool's LSI
+            </a>
+            <div className="strip-title">Here's what we do…</div>
           </div>
         </div>
       </header>
@@ -253,6 +309,89 @@ export default function App() {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+/* ------------------- WINTER PAGE (top card + search hero) ------------------- */
+function WinterChemistryPage() {
+  const lsiBg = imageByBase("lsi_bg"); // supports any extension in /src/assets/images
+  const [query, setQuery] = useState("");
+  const onSubmit = (e) => {
+    e.preventDefault();
+    // For now, just open mail with the query prefilled. You can wire this to real search later.
+    const subject = encodeURIComponent("Pool Issue: " + (query || "Help with winter chemistry"));
+    const body = encodeURIComponent(
+      `Describe your issue (photos welcome):\n\n${query}\n\nMy contact info:\n- Name:\n- Phone:\n- City:\n`
+    );
+    window.location.href = `mailto:deepend.service@deependpoolsolutions.com?subject=${subject}&body=${body}`;
+  };
+
+  return (
+    <div style={{ fontFamily: "Oswald, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", color: "#112434", background: "#ffffff" }}>
+      <style>{css}</style>
+
+      {/* Banner */}
+      <section className="winter-hero">
+        <div className="winter-hero__bg" />
+        <div className="container winter-hero__inner">
+          <h1 className="winter-hero__title">Deep End Support</h1>
+          <p className="winter-hero__dek">
+            Tell us what’s going on, and we’ll guide you to a fix.
+          </p>
+        </div>
+      </section>
+
+      {/* Lead visual — supports lsi_bg.* with a soft blur */}
+      <div className="container winter-lead fade-on-view">
+        <figure className="winter-lead__figure">
+          <div className="winter-lead__img" role="img" aria-label="Winter chemistry visual">
+            {lsiBg ? (
+              <img className="winter-lead__photo" src={lsiBg} alt="LSI background" />
+            ) : null}
+            <div className="winter-lead__scrim" />
+          </div>
+          <figcaption className="winter-lead__cap">
+            Recently had your water tested? Get a free comprehensive analysis right at home!
+          </figcaption>
+        </figure>
+      </div>
+
+      {/* NEW: Centered prompt + search bar */}
+      <section className="container winter-search fade-on-view">
+        <h2 className="winter-search__headline">What&apos;s your problem!?</h2>
+        <p className="winter-search__sub">We can help...</p>
+
+        <form className="winter-search__form" onSubmit={onSubmit} role="search" aria-label="Describe your pool issue">
+          <div className="winter-search__field">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="e.g., pH keeps drifting up, heater scaling, plaster dust, metals, cloudy water..."
+              aria-label="Describe your issue"
+            />
+            <button type="submit" aria-label="Send">
+              Get help
+            </button>
+          </div>
+          <div className="winter-search__chips" aria-hidden="true">
+            <span onClick={() => setQuery("Low LSI / etching risk in cold water")}>LSI/etching</span>
+            <span onClick={() => setQuery("White scale forming on tile line or heater")}>Scale</span>
+            <span onClick={() => setQuery("SWG stopped producing chlorine in cold temps")}>SWG & cold</span>
+            <span onClick={() => setQuery("How to set pH/TA/CH for winter balance")}>Target levels</span>
+            <span onClick={() => setQuery("Stain or metal issues over the winter")}>Stains/Metals</span>
+          </div>
+        </form>
+      </section>
+
+      <footer className="winter-footer">
+        <div className="container winter-footer__inner">
+          <p className="winter-footer__txt">
+            Prefer to chat? Email <a href="mailto:deepend.service@deependpoolsolutions.com">deepend.service@deependpoolsolutions.com</a> or call <a href="tel:+18175643400">817-564-3400</a>.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -366,22 +505,22 @@ function AdditionalResources() {
       title: "Retail",
       key: "retail",
       text:
-        "If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products to keep your pool crystal clear, safe, and fun. We offer free water testing every day. Visit us at any of our four convenient locations in North Richland Hills, Roanoke, Lantana, or Flower Mound to experience the difference in person.",
-      tint: ["#13909e", "#22c1d6"], // teal → aqua
+        "If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products...",
+      tint: ["#13909e", "#22c1d6"],
     },
     {
       title: "Repair",
       key: "repair",
       text:
-        "Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment — from pumps, filters, and heaters to automation systems and more. Whether it’s a small fix or a major breakdown, we’ll diagnose the issue quickly and get your pool running smoothly again so you can enjoy a hassle-free swim season.",
-      tint: ["#0b63c8", "#13909e"], // blue → teal
+        "Trouble with your pool equipment? No problem! Our expert repair team specializes in all types of pool equipment...",
+      tint: ["#0b63c8", "#13909e"],
     },
     {
       title: "Maintenance",
       key: "maintenance",
       text:
-        "Keeping your pool healthy and inviting takes consistent care, and that’s where our maintenance team shines. From routine cleanings to full green-to-clean treatments, we make sure your pool is always ready to enjoy. Ask about our weekly service options for reliable, flexible upkeep.",
-      tint: ["#0a1040", "#0b63c8"], // deep navy → blue
+        "Keeping your pool healthy and inviting takes consistent care, and that’s where our maintenance team shines...",
+      tint: ["#0a1040", "#0b63c8"],
     },
   ];
 
@@ -423,7 +562,7 @@ function AdditionalResources() {
          <span className="resources-cta-sub">deepend@poolwerx.com</span>
       </p>
 
-      {/* Powered by Poolwerx (centered, with local frosted chip to improve visibility) */}
+      {/* Powered by Poolwerx */}
       <div className="poweredby">
         <div className="poweredby__text">Powered by:</div>
         {pwLogo ? (
@@ -586,7 +725,7 @@ const css = `
   --bg: #ffffff;
   --fg: #1a2b3c;
 
-  --strip: #e6d87a;           /* yellow bar */
+  --strip: #e6d87a;
   --strip-border: #1c5aa3;
 
   --hero-bg: #f3f4f6;
@@ -602,7 +741,7 @@ const css = `
   --brand-navy: #0a1040;
   --brand-teal: #13909e;
 
-  --cover-closed: clamp(56px, 7.2vw, 74px); /* just big enough for title */
+  --cover-closed: clamp(56px, 7.2vw, 74px);
   --cover-open: 78%;
 
   --cover-bg: linear-gradient(180deg, rgba(9,23,40,.92), rgba(9,23,40,.96));
@@ -614,7 +753,10 @@ html,body,#root{height:100%}
 html{scroll-behavior:smooth}
 body{
   margin:0;
-  background:var(--bg);
+  background:
+    radial-gradient(900px 500px at 10% -10%, #e8f5ff 0%, transparent 60%),
+    radial-gradient(700px 360px at 90% 0%, #f2fbff 0%, transparent 60%),
+    var(--bg);
   color:var(--fg);
   font-family: 'Oswald', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
@@ -659,6 +801,35 @@ body{
 .strip-title{ font-size: clamp(18px, 2.6vw, 22px); font-weight: 800; color: var(--brand-teal); }
 .strip-subtitle{ text-align:center; font-size: clamp(14px, 2.2vw, 18px); font-weight: 600; color: #0f2732; line-height: 1.2; }
 .strip-subtitle a{ color:#c1121f; text-decoration: underline; font-style: italic; font-weight: 700; }
+
+/* LSI Calculator Button */
+.lsi-calc-button {
+  display: inline-block;
+  padding: 12px 32px;
+  font-size: clamp(15px, 2.2vw, 18px);
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border: 2px solid #1c5aa3;
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lsi-calc-button:hover {
+  background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(30, 60, 114, 0.4);
+}
+
+.lsi-calc-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(30, 60, 114, 0.3);
+}
 
 /* Sections */
 .section{ position:relative; padding: clamp(22px, 5vw, 56px) 0 }
@@ -716,7 +887,7 @@ body{
 @media (max-width: 560px){ .expanded__text{ max-height: 320px; } }
 .expanded__text p{ margin:0 0 10px; line-height:1.55 }
 
-/* ------------------- CONTACT SECTION (plain centered) ------------------- */
+/* ------------------- CONTACT SECTION ------------------- */
 .contact-section{ background: var(--strip); border-top: 4px solid var(--strip-border); padding: clamp(36px, 6vw, 72px) 0; }
 .contact-title{ margin:0 0 14px; font-size: clamp(24px,3.2vw,34px); color:#0f2732; text-align:center; }
 .contact-lines{ max-width: 720px; margin: 0 auto; text-align:center; padding: 0 8px; }
@@ -753,7 +924,7 @@ body{
   cursor:pointer;
   transition: transform .18s ease, box-shadow .18s ease;
   outline:none;
-  height: clamp(260px, 38vw, 360px); /* fixed card height */
+  height: clamp(260px, 38vw, 360px);
 }
 .rcard:hover{ transform: translateY(-3px); box-shadow: 0 16px 36px rgba(0,0,0,.22); }
 .rcard:focus-visible{ box-shadow: 0 0 0 3px #7dd3fc, 0 12px 30px rgba(0,0,0,.22); }
@@ -764,35 +935,30 @@ body{
 .rcard__ph{ display:grid; place-items:center; height:100%; color:#9fb3c8; background:#1e2736; font-weight:700; }
 .rcard__tint{ position:absolute; inset:0; opacity:.48; mix-blend-mode: screen; }
 
-/* Sliding black cover (with angled flair drawn by ::before) */
 /* Sliding black cover */
 .rcard__cover{
   position:absolute; left:0; right:0; bottom:0;
   height: var(--cover-closed);
   background: var(--cover-bg);
-  border-top: 1px solid rgba(255,255,255,.08); /* keep the cover's border */
+  border-top: 1px solid rgba(255,255,255,.08);
   padding: 14px 18px 16px;
   z-index:1;
   transition: height .28s ease;
   will-change: height;
 }
-
-/* Angled flair – push it higher and don't draw another border */
 .rcard__cover::before{
   content:"";
   position:absolute; left:0; right:0;
-  top:-44px;              /* was -28px */
-  height:44px;            /* was 32px */
+  top:-44px;
+  height:44px;
   background: var(--cover-bg);
-  border-top: none;       /* remove duplicate seam */
+  border-top: none;
   clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%);
   pointer-events: none;
 }
-
 .rcard:hover .rcard__cover,
 .rcard--open .rcard__cover{ height: var(--cover-open); }
 
-/* Title sits safely below the angled flair */
 .rcard__title{
   margin: 2px 0 8px;
   font-size: clamp(18px, 2.4vw, 20px);
@@ -800,7 +966,7 @@ body{
   letter-spacing: .2px;
   color:#fff;
   transition: transform .22s ease, color .22s ease;
-  position:relative; z-index:1; /* above the flair */
+  position:relative; z-index:1;
 }
 .rcard:hover .rcard__title,
 .rcard--open .rcard__title{
@@ -808,7 +974,7 @@ body{
   color:#ffffff;
 }
 
-/* Text reveal inside the cover (card doesn't resize) */
+/* Text reveal inside the cover */
 .rcard__text{
   margin:0;
   color: var(--text-soft);
@@ -817,11 +983,9 @@ body{
   overflow:hidden;
   opacity:0;
   transition: max-height .28s ease, opacity .22s ease;
-
-  /* NEW: fill remaining space and be scrollable when open */
   flex: 1 1 auto;
   min-height:0;
-  position:relative; z-index:1; /* above the flair */
+  position:relative; z-index:1;
 }
 .rcard:hover .rcard__text,
 .rcard--open .rcard__text{
@@ -830,12 +994,8 @@ body{
   opacity:1;
   -webkit-overflow-scrolling: touch;
 }
-
-/* Give the open cover a bit more room on small screens */
 @media (max-width: 640px){
-  :root{
-    --cover-open: 92%;
-  }
+  :root{ --cover-open: 92%; }
   .rcard__cover{ padding: 12px 14px 14px; }
   .rcard__title{ margin: 2px 0 6px; }
 }
@@ -844,38 +1004,135 @@ body{
 .resources-cta{ margin-top: clamp(18px, 3vw, 26px); color:#0f2732; font-weight:700; text-align:center; font-size: clamp(16px, 2.4vw, 20px); }
 .resources-cta-link{ color:#fff; text-decoration: underline; font-style: italic; font-weight:700; }
 .resources-cta-sub{ color:#ffffff; }
-
-.poweredby{
-  margin-top: 12px;
-  text-align: center;
-}
-.poweredby__text{
-  color:#0f2732;
-  font-weight: 700;
-  font-size: clamp(14px, 2.2vw, 16px);
-  margin-bottom: 6px;
-}
-/* Frosted chip only around the logo for better readability (does NOT affect video gradients) */
+.poweredby{ margin-top: 12px; text-align: center; }
+.poweredby__text{ color:#0f2732; font-weight: 700; font-size: clamp(14px, 2.2vw, 16px); margin-bottom: 6px; }
 .poweredby__chip{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding: 10px 16px;
-  border-radius: 12px;
-  background: rgba(255,255,255,.10);
-  backdrop-filter: blur(8px) saturate(1.15);
-  -webkit-backdrop-filter: blur(8px) saturate(1.15);
+  display:inline-flex; align-items:center; justify-content:center;
+  padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,.10);
+  backdrop-filter: blur(8px) saturate(1.15); -webkit-backdrop-filter: blur(8px) saturate(1.15);
   box-shadow: 0 8px 24px rgba(0,0,0,.18);
 }
-.poweredby__logo{
-  display: block;
-  width: clamp(80px, 24vw, 160px);
-  height: auto;
-  filter: drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 6px 16px rgba(0,0,0,.22));
-}
+.poweredby__logo{ display:block; width: clamp(80px, 24vw, 160px); height:auto;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 6px 16px rgba(0,0,0,.22)); }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce){
   *, *::before, *::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* ================= WINTER PAGE STYLES & FLAIR ================= */
+.winter-hero{
+  position: relative;
+  background: linear-gradient(180deg, #071a2e, #0a1040);
+  color: #e9f3ff;
+  padding: clamp(36px, 7vw, 80px) 0 clamp(22px, 5vw, 36px);
+  border-bottom: 4px solid var(--brand-blue);
+  overflow:hidden;
+}
+.winter-hero__bg{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(1200px 400px at 30% 0%, rgba(19,144,158,.30), transparent 60%),
+    radial-gradient(900px 360px at 75% 20%, rgba(11,99,200,.30), transparent 60%);
+  opacity:.9; pointer-events:none;
+  animation: bg-pan 24s ease-in-out infinite alternate;
+}
+.winter-hero__bg::before,
+.winter-hero__bg::after{
+  content:"";
+  position:absolute; width:480px; height:480px; border-radius:50%;
+  filter: blur(50px);
+  background: radial-gradient(closest-side, rgba(19,144,158,.28), transparent 70%);
+  top: -120px; left: -120px; pointer-events:none;
+  animation: orb-float 26s ease-in-out infinite;
+}
+.winter-hero__bg::after{
+  width:420px; height:420px; top: auto; bottom: -160px; left: auto; right: -120px;
+  background: radial-gradient(closest-side, rgba(11,99,200,.28), transparent 70%);
+  animation-duration: 30s;
+}
+@keyframes bg-pan {
+  0% { background-position: 0% 0%, 100% 0%; }
+  100% { background-position: 20% 10%, 80% 20%; }
+}
+@keyframes orb-float {
+  0%,100% { transform: translateY(0) translateX(0) scale(1); }
+  50% { transform: translateY(-15px) translateX(10px) scale(1.03); }
+}
+
+.winter-hero__inner{ position:relative; z-index:1; }
+.winter-hero__title{
+  margin:0 0 8px; font-size: clamp(26px, 4.2vw, 44px); font-weight:800; letter-spacing:.2px;
+  text-shadow: 0 6px 20px rgba(0,0,0,.25);
+}
+.winter-hero__dek{
+  margin: 0; max-width: 880px; font-size: clamp(16px, 2.2vw, 20px); line-height:1.4; color:#cfe5ff;
+}
+
+/* Lead visual */
+.winter-lead{ padding: clamp(16px, 3vw, 28px) 0; }
+.winter-lead__figure{ margin:0; border-radius:14px; overflow:hidden; border:1px solid rgba(0,0,0,.08); box-shadow: 0 14px 34px rgba(0,0,0,.16); }
+.winter-lead__img{
+  position:relative; width:100%; height: 220px; overflow:hidden;
+  background: linear-gradient(135deg, #0a1040, #0b63c8 60%, #13909e);
+}
+.winter-lead__photo{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  filter: blur(2.5px) saturate(1.05) brightness(.98);
+  transform: scale(1.03);
+}
+.winter-lead__scrim{
+  position:absolute; inset:0;
+  background: linear-gradient(0deg, rgba(0,0,0,.18), rgba(0,0,0,.06));
+  pointer-events:none;
+}
+.winter-lead__cap{ margin:0; padding:12px 14px; font-size:14px; color:#2a3e4f; background:#f7fbff; border-top:1px solid rgba(0,0,0,.06); }
+
+/* Search hero */
+.winter-search{ text-align:center; padding: clamp(10px, 3.2vw, 20px) 0 clamp(24px, 4vw, 36px); }
+.winter-search__headline{
+  margin: 6px 0 2px; font-weight: 800; letter-spacing: .3px;
+  font-size: clamp(22px, 4vw, 40px); color:#0a2b4c;
+}
+.winter-search__sub{
+  margin: 0 0 14px; color:#4d6a7d; font-size: clamp(14px, 2vw, 18px);
+}
+.winter-search__form{ max-width: 860px; margin: 0 auto; }
+.winter-search__field{
+  display:flex; gap:10px; align-items:center; background:#ffffff;
+  border:1px solid rgba(0,0,0,.10); border-radius: 999px; padding: 8px 8px 8px 14px;
+  box-shadow: 0 8px 26px rgba(0,0,0,.08);
+}
+.winter-search__field input{
+  flex:1; border:none; outline:none; font: inherit; font-size: clamp(14px, 2vw, 18px);
+  padding: 10px 8px; color:#0f2732; background:transparent;
+}
+.winter-search__field button{
+  border:none; outline:none; cursor:pointer; font-weight:800; letter-spacing:.2px;
+  padding: 10px 16px; border-radius: 999px; background: linear-gradient(135deg, #0b63c8, #13909e);
+  color:#fff; box-shadow: 0 8px 22px rgba(11,99,200,.28); transition: transform .15s ease, box-shadow .15s ease;
+}
+.winter-search__field button:hover{ transform: translateY(-1px); box-shadow: 0 12px 28px rgba(11,99,200,.34); }
+
+.winter-search__chips{
+  display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px; user-select:none;
+}
+.winter-search__chips span{
+  font-size: 13px; color:#0a2b4c; background:#eaf6ff; border:1px solid #cfe9ff;
+  padding:6px 10px; border-radius:999px; cursor:pointer; transition: transform .12s ease, background .12s ease;
+}
+.winter-search__chips span:hover{ transform: translateY(-1px); background:#e2f2ff; }
+
+/* Footer */
+.winter-footer{
+  background:#0a1040; color:#d8e6f3; border-top:4px solid var(--brand-blue);
+  margin-top: clamp(22px, 4vw, 40px); padding: 18px 0;
+}
+.winter-footer__txt{ margin:0; text-align:center; font-weight:700; }
+
+/* Animations used in hero bg */
+@keyframes metric-pop {
+  from { transform: translateY(6px); opacity: .0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 `;
