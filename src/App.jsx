@@ -182,15 +182,26 @@ export default function App() {
           <div className="topbar__text">
             Take a listen to The Deep End Pool Podcast!
           </div>
-          <a
-            className="topbar__btn"
-            href="https://thedeependpoolpodcast.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Check out our podcast"
-          >
-            Check out our podcast
-          </a>
+          <div className="topbar__buttons">
+            <a
+              className="topbar__btn"
+              href="https://thedeependpoolpodcast.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Check out our podcast"
+            >
+              Our Podcast
+            </a>
+            <a
+              className="topbar__btn"
+              href="https://www.youtube.com/@deependfrank/featured"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Check out our YouTube channel"
+            >
+              Our YouTube
+            </a>
+          </div>
         </div>
       </div>
 
@@ -209,10 +220,19 @@ export default function App() {
             >
               Calculate Your Pool's LSI
             </a>
+            <div className="strip-phone">
+              <div className="strip-phone-text">Call us for a free estimate!</div>
+              <a href="tel:+18175643400" className="strip-phone-number">
+                817-564-3400
+              </a>
+            </div>
             <div className="strip-title">Here's what we do…</div>
           </div>
         </div>
       </header>
+
+      {/* Divider below hero strip */}
+      <div className="section-divider" role="separator" aria-hidden="true"></div>
 
       {/* WHAT WE DO (looping background video) */}
       <section ref={whatRef} className="section section--video fade-on-view">
@@ -260,24 +280,7 @@ export default function App() {
 
       {/* ======= ADDITIONAL RESOURCES (above Contact) ======= */}
       <section className="section section--resources fade-on-view" id="resources">
-        {/* Background video */}
-        <div className="resources-video-bg" aria-hidden="true">
-          <video
-            className="resources-video-bg__media"
-            src="/videos/bubbles.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-          />
-          <div className="resources-video-bg__scrim" />
-        </div>
-
-        {/* Foreground content */}
-        <div className="container">
-          <AdditionalResources />
-        </div>
+        <AdditionalResources />
       </section>
 
       {/* Divider between resources and contact */}
@@ -287,6 +290,26 @@ export default function App() {
       <section className="contact-section fade-on-view" id="contact">
         <div className="container">
           <h2 className="contact-title">Contact us</h2>
+
+          {/* Facebook Section */}
+          <div className="facebook-section">
+            <h3 className="facebook-title">Join Our Pool Community!</h3>
+            <p className="facebook-description">
+              Connect with other pool owners, get expert tips, and stay updated with the latest pool care advice.
+            </p>
+            <a
+              href="https://www.facebook.com/groups/760287595187311/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="facebook-button"
+              aria-label="Join our Facebook group"
+            >
+              <svg className="facebook-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              Join the DFW Pool Owners Group
+            </a>
+          </div>
 
           <div className="contact-lines">
             <div className="contact-block">
@@ -404,14 +427,6 @@ function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
     setPreview(firstSlideFor(data.prefix || data.key));
   }, [data.prefix, data.key]);
 
-  const styleCard = {
-    background: `linear-gradient(160deg, ${theme.start} 0%, ${theme.end} 100%)`,
-    border: "2px solid #ffffff",
-    borderRadius: "10px",
-    overflow: "hidden",
-    position: "relative",
-  };
-
   return (
     <a
       className={`service ${hidden ? "service--hidden" : ""}`}
@@ -419,7 +434,6 @@ function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
       ref={refFn}
       onClick={(e) => { e.preventDefault(); onOpen(); }}
       aria-label={`Open ${data.title}`}
-      style={styleCard}
     >
       <div className="service__thumb">
         {preview && (
@@ -437,21 +451,55 @@ function ServiceCard({ data, theme, refFn, hidden, onOpen }) {
             onError={(e) => { e.currentTarget.style.display = "none"; }}
           />
         )}
+        {/* Gradient overlay on image */}
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "50%",
+          background: `linear-gradient(to top, ${theme.end}f0 0%, ${theme.end}cc 30%, transparent 100%)`,
+          zIndex: 1,
+        }}></div>
       </div>
       <div
         className="service__title"
         style={{
-          position: "relative",
-          zIndex: 1,
-          padding: "12px 14px",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 2,
+          padding: "18px 20px",
           fontWeight: 800,
           color: "#fff",
-          textShadow: "0 1px 2px rgba(0,0,0,.4)",
-          background: "rgba(0,0,0,.25)",
-          backdropFilter: "blur(4px)",
+          textShadow: "0 2px 8px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.3)",
+          fontSize: "clamp(17px, 2.6vw, 22px)",
+          background: "linear-gradient(to top, rgba(0,0,0,.4) 0%, rgba(0,0,0,.2) 100%)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        {data.title}
+        <span>{data.title}</span>
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            opacity: 0.9,
+            transition: "transform 0.3s ease",
+          }}
+          className="service__arrow"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
       </div>
     </a>
   );
@@ -498,6 +546,8 @@ function ResourceCard({ title, body, prefix, tint = ["#0b63c8", "#13909e"], acti
 
 function AdditionalResources() {
   const [active, setActive] = useState(null);
+  const bubbleContainerRef = useRef(null);
+  const cursorBubblesRef = useRef([]);
 
   // ORDER: Retail, Repair, Maintenance
   const items = [
@@ -505,7 +555,7 @@ function AdditionalResources() {
       title: "Retail",
       key: "retail",
       text:
-        "If you're looking for chemicals, parts, or pool toys, we’ve got you covered! Our retail department is fully stocked with top-quality products...",
+        "If you're looking for chemicals, parts, or pool toys, we've got you covered! Our retail department is fully stocked with top-quality products...",
       tint: ["#13909e", "#22c1d6"],
     },
     {
@@ -519,57 +569,219 @@ function AdditionalResources() {
       title: "Maintenance",
       key: "maintenance",
       text:
-        "Keeping your pool healthy and inviting takes consistent care, and that’s where our maintenance team shines...",
+        "Keeping your pool healthy and inviting takes consistent care, and that's where our maintenance team shines...",
       tint: ["#0a1040", "#0b63c8"],
     },
   ];
+
+  // Ambient bubbles effect
+  useEffect(() => {
+    const container = bubbleContainerRef.current;
+    if (!container) return;
+
+    const createBubble = () => {
+      const bubble = document.createElement('div');
+      bubble.className = 'ambient-bubble';
+
+      // Random size between 30px and 80px (much larger)
+      const size = Math.random() * 50 + 30;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+
+      // Random horizontal position
+      const startX = Math.random() * 100;
+      bubble.style.left = `${startX}%`;
+
+      // Random horizontal drift
+      const drift = (Math.random() - 0.5) * 80; // -40 to 40
+      bubble.style.setProperty('--drift', `${drift}px`);
+
+      // Random animation duration between 4-8 seconds
+      const duration = Math.random() * 4 + 4;
+      bubble.style.animationDuration = `${duration}s`;
+
+      // Random opacity
+      const opacity = Math.random() * 0.35 + 0.15;
+      bubble.style.opacity = opacity;
+
+      container.appendChild(bubble);
+
+      // Remove bubble after animation completes
+      setTimeout(() => {
+        if (bubble.parentNode) {
+          bubble.remove();
+        }
+      }, duration * 1000);
+    };
+
+    // Create initial bubbles with stagger (increased to 35)
+    for (let i = 0; i < 35; i++) {
+      setTimeout(() => createBubble(), i * 150);
+    }
+
+    // Continuously create new bubbles (very frequent - every 300ms)
+    const interval = setInterval(createBubble, 300);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Cursor trail bubbles
+  useEffect(() => {
+    const container = bubbleContainerRef.current;
+    if (!container) return;
+
+    let lastTime = 0;
+    const throttleDelay = 40; // Create bubbles every 40ms (increased frequency)
+
+    const handleMouseMove = (e) => {
+      const now = Date.now();
+      if (now - lastTime < throttleDelay) return;
+      lastTime = now;
+
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Only create bubbles if cursor is within container
+      if (x < 0 || y < 0 || x > rect.width || y > rect.height) return;
+
+      // Create 2-3 bubbles per mouse move for denser trail
+      const bubblesCount = Math.floor(Math.random() * 2) + 2; // 2 or 3 bubbles
+
+      for (let i = 0; i < bubblesCount; i++) {
+        // Create small cursor bubble
+        const bubble = document.createElement('div');
+        bubble.className = 'cursor-bubble';
+
+        const size = Math.random() * 6 + 5;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+
+        // Slight offset from cursor position for variety
+        const offsetX = (Math.random() - 0.5) * 20;
+        const offsetY = (Math.random() - 0.5) * 20;
+        bubble.style.left = `${x + offsetX}px`;
+        bubble.style.top = `${y + offsetY}px`;
+
+        // Random drift for each bubble
+        const randomX = Math.random();
+        const randomY = Math.random();
+        bubble.style.setProperty('--random-x', randomX);
+        bubble.style.setProperty('--random-y', randomY);
+
+        container.appendChild(bubble);
+        cursorBubblesRef.current.push(bubble);
+
+        // Remove after animation (1.5s)
+        setTimeout(() => {
+          if (bubble.parentNode) {
+            bubble.remove();
+          }
+          cursorBubblesRef.current = cursorBubblesRef.current.filter(b => b !== bubble);
+        }, 1500);
+      }
+    };
+
+    container.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      container.removeEventListener('mousemove', handleMouseMove);
+      cursorBubblesRef.current.forEach(b => {
+        if (b.parentNode) b.remove();
+      });
+      cursorBubblesRef.current = [];
+    };
+  }, []);
 
   // poolwerx_logo.* should be in /src/assets/images/, prefix becomes "poolwerx"
   const pwLogo = firstSlideFor("poolwerx");
 
   return (
-    <div className="resources">
-      <h3 className="resources-title">You've reached The Deep End...</h3>
+    <div className="resources" ref={bubbleContainerRef}>
+      <div className="container">
+        <h3 className="resources-title">You've reached The Deep End...</h3>
 
-      <div className="resources-cards">
-        {items.map((it) => (
-          <ResourceCard
-            key={it.key}
-            title={it.title}
-            body={it.text}
-            prefix={it.key}
-            tint={it.tint}
-            active={active}
-            setActive={setActive}
-          />
-        ))}
-      </div>
+        <div className="resources-cards">
+          {items.map((it) => (
+            <ResourceCard
+              key={it.key}
+              title={it.title}
+              body={it.text}
+              prefix={it.key}
+              tint={it.tint}
+              active={active}
+              setActive={setActive}
+            />
+          ))}
+        </div>
 
-      <p className="resources-cta">
-        For more information regarding your Retail/Repair/Maintenance needs:<br />
-        <a
-          className="resources-cta-link"
-          href="https://www.poolwerx.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Click here for more information regarding Retail, Repair, and Maintenance"
-        >
-          poolwerx.com
-        </a>
-        <br />
-         <span className="resources-cta-sub">972-962-9119</span>
-         <br />
-         <span className="resources-cta-sub">deepend@poolwerx.com</span>
-      </p>
+        <p className="resources-cta">
+          For more information regarding your Retail/Repair/Maintenance needs:<br />
+          <a
+            className="resources-cta-link"
+            href="https://www.poolwerx.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Click here for more information regarding Retail, Repair, and Maintenance"
+          >
+            poolwerx.com
+          </a>
+          <br />
+           <span className="resources-cta-sub">972-962-9119</span>
+           <br />
+           <span className="resources-cta-sub">deepend@poolwerx.com</span>
+        </p>
 
-      {/* Powered by Poolwerx */}
-      <div className="poweredby">
-        <div className="poweredby__text">Powered by:</div>
-        {pwLogo ? (
-          <div className="poweredby__chip">
-            <img className="poweredby__logo" src={pwLogo} alt="Poolwerx" />
+        {/* Visit Our Locations */}
+        <div className="locations-section">
+          <h3 className="locations-title">Come visit one of our locations!</h3>
+          <div className="locations-buttons">
+            <a
+              href="https://www.poolwerx.com/locations/texas/poolwerx-north-richland-hills/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="location-btn"
+            >
+              North Richland Hills
+            </a>
+            <a
+              href="https://www.poolwerx.com/locations/texas/poolwerx-roanoke/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="location-btn"
+            >
+              Roanoke
+            </a>
+            <a
+              href="https://www.poolwerx.com/locations/texas/poolwerx-denton/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="location-btn"
+            >
+              Lantana
+            </a>
+            <a
+              href="https://www.poolwerx.com/locations/texas/poolwerx-flower-mound/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="location-btn"
+            >
+              Flower Mound
+            </a>
           </div>
-        ) : null}
+        </div>
+
+        {/* Powered by Poolwerx */}
+        <div className="poweredby">
+          <div className="poweredby__text">Powered by:</div>
+          {pwLogo ? (
+            <div className="poweredby__chip">
+              <img className="poweredby__logo" src={pwLogo} alt="Poolwerx" />
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
@@ -581,6 +793,8 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
   const [slides, setSlides] = useState([]);
   const [idx, setIdx] = useState(0);
   const rotRef = useRef(null);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   useEffect(() => {
     const urls = slidesFor(service.prefix);
@@ -592,6 +806,21 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     rotRef.current = setInterval(() => setIdx((i) => (i + 1) % slides.length), 3500);
     return () => { if (rotRef.current) clearInterval(rotRef.current); };
   }, [slides]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        setIdx((i) => (i - 1 + slides.length) % slides.length);
+      } else if (e.key === 'ArrowRight') {
+        setIdx((i) => (i + 1) % slides.length);
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [slides.length, onClose]);
 
   // FLIP animation using WAAPI
   useLayoutEffect(() => {
@@ -610,15 +839,40 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     const canAnimate = "animate" in node && !prefersReduce;
 
     if (canAnimate) {
+      // Backdrop fade-in with blur
       node.animate(
-        [{ opacity: 0, backdropFilter: "blur(0px)" }, { opacity: 1, backdropFilter: "blur(6px)" }],
-        { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)", fill: "both" }
+        [
+          { opacity: 0, backdropFilter: "blur(0px)" },
+          { opacity: 1, backdropFilter: "blur(10px)" }
+        ],
+        { duration: 400, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }
       );
+
+      // FLIP transform animation
       node.style.transformOrigin = "top left";
-      node.animate(
-        [{ transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` }, { transform: "translate(0, 0) scale(1, 1)" }],
-        { duration: 360, easing: "cubic-bezier(.18,.84,.26,1)", fill: "both" }
-      );
+      const cardNode = node.querySelector('.expanded');
+      if (cardNode) {
+        cardNode.animate(
+          [
+            {
+              transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`,
+              opacity: 0.8,
+              borderRadius: '16px'
+            },
+            {
+              transform: "translate(0, 0) scale(1, 1)",
+              opacity: 1,
+              borderRadius: '16px'
+            }
+          ],
+          { duration: 450, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }
+        );
+      } else {
+        node.animate(
+          [{ transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` }, { transform: "translate(0, 0) scale(1, 1)" }],
+          { duration: 450, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }
+        );
+      }
       const content = node.querySelector(".expanded");
       if (content) {
         content.animate(
@@ -647,15 +901,32 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
     const canAnimate = "animate" in node && !prefersReduce;
 
     if (canAnimate) {
+      // Backdrop fade-out with blur
       node.animate(
-        [{ opacity: 1, backdropFilter: "blur(6px)" }, { opacity: 0, backdropFilter: "blur(0px)" }],
-        { duration: 240, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
+        [
+          { opacity: 1, backdropFilter: "blur(10px)" },
+          { opacity: 0, backdropFilter: "blur(0px)" }
+        ],
+        { duration: 300, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" }
       );
-      node.style.transformOrigin = "top left";
-      node.animate(
-        [{ transform: "translate(0,0) scale(1,1)" }, { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` }],
-        { duration: 260, easing: "cubic-bezier(.18,.84,.26,1)", fill: "forwards" }
-      ).finished.finally(onClose).catch(onClose);
+
+      // Card zoom-out and fade
+      const cardNode = node.querySelector('.expanded');
+      if (cardNode) {
+        cardNode.animate(
+          [
+            { transform: "scale(1)", opacity: 1 },
+            { transform: "scale(0.95)", opacity: 0 }
+          ],
+          { duration: 300, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" }
+        ).finished.finally(onClose).catch(onClose);
+      } else {
+        node.style.transformOrigin = "top left";
+        node.animate(
+          [{ transform: "translate(0,0) scale(1,1)" }, { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` }],
+          { duration: 300, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" }
+        ).finished.finally(onClose).catch(onClose);
+      }
     } else {
       node.classList.remove("flip-fallback-in--play");
       setTimeout(onClose, 220);
@@ -663,28 +934,62 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
   };
 
   return (
-    <div ref={wrapRef} className="expanded-overlay">
+    <div
+      ref={wrapRef}
+      className="expanded-overlay"
+      onClick={(e) => {
+        // Close if clicking on the overlay background
+        if (e.target === e.currentTarget) {
+          handleClose();
+        }
+      }}
+    >
       <div
         className="expanded"
         style={{
           background: `linear-gradient(160deg, ${theme.start} 0%, ${theme.end} 100%)`,
           color: "#fff",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         <button className="close" aria-label="Close" onClick={handleClose}>×</button>
 
         <div className="expanded__header">
-          <h3 style={{ color: "#fff", textShadow: "0 1px 2px rgba(0,0,0,.35)" }}>{service.title}</h3>
+          <h3>{service.title}</h3>
         </div>
 
         <div className="expanded__content">
           {/* Slider */}
           {slides.length > 0 ? (
-            <div className="slider">
+            <div
+              className="slider"
+              data-count={`${idx + 1} / ${slides.length}`}
+              onTouchStart={(e) => {
+                touchStartX.current = e.touches[0].clientX;
+              }}
+              onTouchMove={(e) => {
+                touchEndX.current = e.touches[0].clientX;
+              }}
+              onTouchEnd={() => {
+                const diff = touchStartX.current - touchEndX.current;
+                const threshold = 50;
+                if (Math.abs(diff) > threshold) {
+                  if (diff > 0) {
+                    // Swipe left - next
+                    setIdx((i) => (i + 1) % slides.length);
+                  } else {
+                    // Swipe right - previous
+                    setIdx((i) => (i - 1 + slides.length) % slides.length);
+                  }
+                }
+                touchStartX.current = 0;
+                touchEndX.current = 0;
+              }}
+            >
               <ul className="slider__track" style={{ transform: `translate3d(${-idx * 100}%,0,0)` }}>
                 {slides.map((src, i) => (
                   <li className="slider__slide" key={`${src}-${i}`}>
-                    <img src={src} alt={`${service.title} ${i + 1}`} />
+                    <img src={src} alt={`${service.title} ${i + 1}`} draggable="false" />
                   </li>
                 ))}
               </ul>
@@ -701,10 +1006,10 @@ function ExpandedFLIP({ service, theme, summary, fromRect, onClose }) {
             </div>
           )}
 
-          {/* Scrollable text (white background) */}
-          <div className="expanded__text" style={{ background: "#fff", color: "#1a2b3c" }}>
+          {/* Scrollable text */}
+          <div className="expanded__text">
             <p>{summary}</p>
-            <p style={{ color: "#607185" }}>
+            <p style={{ color: "#607185", fontSize: "clamp(13px, 1.8vw, 15px)", fontStyle: "italic" }}>
               Images show examples of our work; your project may vary. Please contact us with an inquiry. We accommodate.
             </p>
           </div>
@@ -725,10 +1030,10 @@ const css = `
   --bg: #ffffff;
   --fg: #1a2b3c;
 
-  --strip: #e6d87a;
+  --strip: #d4e8f7;
   --strip-border: #1c5aa3;
 
-  --hero-bg: #f3f4f6;
+  --hero-bg: #ffffff;
   --hero-max-w: 500px;
 
   --expanded-border: rgba(0,0,0,.12);
@@ -754,81 +1059,190 @@ html{scroll-behavior:smooth}
 body{
   margin:0;
   background:
-    radial-gradient(900px 500px at 10% -10%, #e8f5ff 0%, transparent 60%),
-    radial-gradient(700px 360px at 90% 0%, #f2fbff 0%, transparent 60%),
-    var(--bg);
+    radial-gradient(1200px 700px at 15% -10%, rgba(28, 90, 163, 0.08) 0%, transparent 65%),
+    radial-gradient(900px 500px at 85% 5%, rgba(19, 144, 158, 0.06) 0%, transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%);
   color:var(--fg);
   font-family: 'Oswald', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .container{ max-width: var(--container); margin:0 auto; padding:0 20px }
 
 /* =============== TOPBAR =============== */
 .topbar{
-  background: linear-gradient(180deg, var(--topbar-bg-1), var(--topbar-bg-2));
+  background: linear-gradient(135deg, var(--topbar-bg-1) 0%, var(--topbar-bg-2) 100%);
   color:#e8efff;
   font-size: 14px;
   letter-spacing: .02em;
   border-bottom: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 100;
 }
 .topbar__inner{ position: relative; padding: 6px 0; min-height: 36px; }
 .topbar__text{
   width: 100%; text-align: center; font-weight: 600; line-height: 1.2;
-  padding: 6px 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding: 6px 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.topbar__buttons{
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  display: flex; gap: 8px;
 }
 .topbar__btn{
-  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
   text-decoration: none; color:#e8efff; border: 2px solid #ffffff;
   padding: 6px 10px; border-radius: 8px; font-weight: 700;
-  transition: transform .12s ease, background-color .12s ease, color .12s ease, border-color .12s ease;
+  transition: all .12s ease;
   background: transparent; white-space: nowrap;
 }
-.topbar__btn:hover{ transform: translateY(calc(-50% - 1px)); background: rgba(255,255,255,.06); border-color:#fff; }
+.topbar__btn:hover{ background: rgba(255,255,255,.06); border-color:#fff; transform: translateY(-1px); }
 @media (max-width: 560px){
-  .topbar__inner{ padding: 8px 0 44px; }
+  .topbar__inner{ padding: 8px 0 52px; }
   .topbar__text{ padding: 6px 10px; }
-  .topbar__btn{ right: 10px; left: 10px; top: auto; bottom: 6px; transform: none; text-align:center; }
+  .topbar__buttons{ right: 10px; left: 10px; top: auto; bottom: 6px; transform: none; justify-content: center; }
+  .topbar__btn{ flex: 1; text-align:center; }
 }
 
 /* HERO */
-.hero{ margin:0; padding:20px 0 0; background: var(--hero-bg); text-align:center }
-.hero-img{ width:100%; max-width: var(--hero-max-w); height:auto; display:inline-block; margin:0 auto }
-.hero-subtitle { text-align:center; margin:12px 0 16px; font-size: clamp(18px, 2.8vw, 24px); font-weight:600; color:#067796; }
+.hero{
+  margin:0;
+  padding:20px 0 0;
+  background: var(--hero-bg);
+  text-align:center;
+}
+.hero-img{
+  width:100%;
+  max-width: var(--hero-max-w);
+  height:auto;
+  display:inline-block;
+  margin:0 auto;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.08));
+  transition: transform 0.3s ease;
+}
+.hero-img:hover{
+  transform: scale(1.02);
+}
+.hero-subtitle {
+  text-align:center;
+  margin:12px 0 16px;
+  font-size: clamp(18px, 2.8vw, 24px);
+  font-weight:600;
+  color:#067796;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease 0.2s forwards;
+}
 
-/* Yellow strip with financing line ABOVE the title */
-.hero-strip{ position: relative; background: var(--strip); border-top:4px solid var(--strip-border); }
-.hero-strip > .container{ display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 10px 20px 12px; gap: 6px; }
-.strip-title{ font-size: clamp(18px, 2.6vw, 22px); font-weight: 800; color: var(--brand-teal); }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Blue strip section */
+.hero-strip{
+  position: relative;
+  background: linear-gradient(180deg, var(--strip) 0%, rgba(212, 232, 247, 0.7) 100%);
+  border-top:4px solid var(--strip-border);
+  box-shadow: 0 4px 16px rgba(28, 90, 163, 0.12);
+}
+.hero-strip > .container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding: 16px 20px 18px;
+  gap: 8px;
+}
+.strip-title{
+  font-size: clamp(18px, 2.6vw, 22px);
+  font-weight: 800;
+  color: var(--brand-teal);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
 .strip-subtitle{ text-align:center; font-size: clamp(14px, 2.2vw, 18px); font-weight: 600; color: #0f2732; line-height: 1.2; }
 .strip-subtitle a{ color:#c1121f; text-decoration: underline; font-style: italic; font-weight: 700; }
 
 /* LSI Calculator Button */
 .lsi-calc-button {
   display: inline-block;
-  padding: 12px 32px;
+  padding: 14px 36px;
   font-size: clamp(15px, 2.2vw, 18px);
   font-weight: 700;
   color: #ffffff;
   background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  border: 2px solid #1c5aa3;
-  border-radius: 8px;
+  border: none;
+  border-radius: 10px;
   text-decoration: none;
   text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(30, 60, 114, 0.35), 0 2px 6px rgba(30, 60, 114, 0.2);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.lsi-calc-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.lsi-calc-button:hover::before {
+  left: 100%;
 }
 
 .lsi-calc-button:hover {
-  background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(30, 60, 114, 0.4);
+  background: linear-gradient(135deg, #2a5298 0%, #3a62b8 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(30, 60, 114, 0.45), 0 4px 10px rgba(30, 60, 114, 0.25);
 }
 
 .lsi-calc-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(30, 60, 114, 0.3);
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 4px 12px rgba(30, 60, 114, 0.35);
+}
+
+/* Phone Number in Strip */
+.strip-phone {
+  text-align: center;
+  margin: 12px 0 8px;
+}
+
+.strip-phone-text {
+  font-size: clamp(15px, 2.3vw, 19px);
+  font-weight: 700;
+  color: #c1121f;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.strip-phone-number {
+  display: inline-block;
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 800;
+  color: #c1121f;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.strip-phone-number:hover {
+  background: rgba(193, 18, 31, 0.1);
+  transform: scale(1.05);
 }
 
 /* Sections */
@@ -838,58 +1252,621 @@ body{
 .section--video{ overflow:hidden }
 .video-bg{ position:absolute; inset:0; z-index:0 }
 .video-bg__media{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter: brightness(.95) saturate(1.05); }
-.video-bg__scrim{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.88) 60%, rgba(255,255,255,1)); }
+.video-bg__scrim{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(255,255,255,.15), rgba(255,255,255,.45) 60%, rgba(255,255,255,.7)); }
 .section--video > .container{ position:relative; z-index:1 }
 
 /* Divider */
-.section-divider{ border-top: 4px solid var(--brand-blue); width: 100%; margin: 0; }
+.section-divider{
+  position: relative;
+  width: 100%;
+  height: 6px;
+  margin: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--brand-blue) 20%,
+    var(--brand-blue) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 2px 8px rgba(11, 99, 200, 0.25);
+  overflow: hidden;
+}
+
+.section-divider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
 
 /* Fade-in */
-.fade-on-view{ opacity:0; transform:translateY(8px); transition: opacity .45s ease, transform .45s ease }
-.fade-on-view.is-visible{ opacity:1; transform:translateY(0) }
+.fade-on-view{
+  opacity:0;
+  transform:translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-on-view.is-visible{
+  opacity:1;
+  transform:translateY(0);
+}
 
 /* GRID */
-.grid{ display:grid; gap:16px; grid-template-columns: repeat(3, 1fr); transition: opacity .25s ease }
-@media(max-width:1050px){ .grid{ grid-template-columns: repeat(2, 1fr) } }
-@media(max-width:560px){ .grid{ grid-template-columns: 1fr } }
+.grid{
+  display:grid;
+  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  transition: opacity .25s ease;
+}
+@media(max-width:1050px){ .grid{ grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+@media(max-width:560px){ .grid{ grid-template-columns: 1fr; gap: 18px; } }
 .grid--collapsed{ opacity:.04; pointer-events:none }
 
-/* Cards (gradient on card body; thin white stroke) */
+/* Modern Service Cards */
 .service{
-  display:flex; flex-direction:column; text-decoration:none; color:inherit;
-  transition: transform .14s ease, box-shadow .14s ease, opacity .2s;
-  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 4px 16px rgba(0,0,0,.08),
+    0 2px 8px rgba(0,0,0,.04),
+    0 1px 3px rgba(0,0,0,.02);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
 }
-.service:hover{ transform: translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,.12) }
-.service--hidden{ opacity:0; pointer-events:none }
-.service__thumb{ position:relative; width:100%; aspect-ratio:16/9 }
-.service__thumb img{ width:100%; height:100%; object-fit:cover }
-.service__title{ padding:12px 14px; font-weight:800; color:#fff }
+
+.service::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(28, 90, 163, 0.04) 0%, rgba(19, 144, 158, 0.03) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.service::after{
+  content: 'View Details';
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a2b3c;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.3px;
+}
+
+.service:hover::before{
+  opacity: 1;
+}
+
+.service:hover::after{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.service:hover{
+  transform: translateY(-10px);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.12),
+    0 8px 20px rgba(0,0,0,.08),
+    0 4px 10px rgba(0,0,0,.04);
+}
+
+.service:active{
+  transform: translateY(-8px);
+  transition: all 0.15s ease;
+}
+
+.service--hidden{
+  opacity:0;
+  pointer-events:none;
+}
+
+.service__thumb{
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+}
+
+.service__thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(1) saturate(1.05);
+}
+
+.service:hover .service__thumb img{
+  transform: scale(1.12);
+  filter: brightness(1.05) saturate(1.1);
+}
+
+.service__title{
+  position: relative;
+  transition: all 0.3s ease;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+}
+
+.service:hover .service__arrow{
+  transform: translateX(4px);
+}
+
+.service:hover .service__title{
+  background: linear-gradient(to top, rgba(0,0,0,.5) 0%, rgba(0,0,0,.3) 100%);
+}
+
+/* Mobile optimizations for cards */
+@media (max-width: 560px) {
+  .service{
+    border-radius: 14px;
+  }
+
+  .service::after{
+    font-size: 12px;
+    padding: 6px 12px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .service__title{
+    font-size: 18px !important;
+  }
+
+  .service__arrow{
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (hover: none) {
+  /* On touch devices, show the "View Details" badge always */
+  .service::after{
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+}
 
 /* ----------- FLIP Overlay ----------- */
-.expanded-overlay{ position: fixed; inset:0; display:grid; align-items:start; justify-items:center; padding: clamp(10px, 4vh, 24px) 12px; background: rgba(0,0,0,.28); backdrop-filter: blur(6px); z-index: 50; pointer-events:none; }
-.expanded{ width: min(1100px, 96vw); border:1px solid var(--expanded-border); border-radius:12px; box-shadow: var(--expanded-shadow); overflow:hidden; position:relative; pointer-events:auto; }
-@media (max-width: 560px){ .expanded{ width:100%; border-radius:10px; } }
-.close{ position:absolute; top:10px; right:12px; width:40px; height:40px; border:none; border-radius:10px; cursor:pointer; background:#eef1f6; color:#111; font-size:26px; line-height:40px; text-align:center; transition: background .18s ease, transform .18s ease; }
-.close:hover{ background:#e5e9f1; transform: translateY(-1px) }
-.expanded__header{ padding:14px 14px 8px }
-.expanded__header h3{ margin:0; font-size: clamp(18px, 2.6vw, 26px) }
-.expanded__content{ display:grid; grid-template-columns: 1.25fr 1fr; gap:14px; padding: 8px 14px 14px; }
-@media(max-width:900px){ .expanded__content{ grid-template-columns: 1fr } }
-.slider{ position:relative; overflow:hidden; border:1px solid var(--border); border-radius:8px; background:#0b111c10 }
-.slider__track{ display:flex; margin:0; padding:0; list-style:none; transition: transform .35s ease }
-.slider__slide{ min-width:100%; aspect-ratio:16/9; background:#f1f5fb; position:relative }
-.slider__slide img{ width:100%; height:100%; object-fit:cover; display:block }
-.nav{ position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.45); color:#fff; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; }
-.nav:hover{ background:rgba(0,0,0,.65) }
-.prev{ left:8px } .next{ right:8px }
-.expanded__text{ border:1px solid var(--border); border-radius:8px; padding:12px; max-height: 360px; overflow:auto; background:#fff; }
-@media (max-width: 560px){ .expanded__text{ max-height: 320px; } }
-.expanded__text p{ margin:0 0 10px; line-height:1.55 }
+.expanded-overlay{
+  position: fixed;
+  inset:0;
+  display:grid;
+  align-items:start;
+  justify-items:center;
+  padding: clamp(10px, 4vh, 24px) 12px;
+  background: rgba(0,0,0,.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 50;
+  pointer-events:none;
+  animation: overlayFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+.expanded{
+  pointer-events: auto;
+  width: min(1100px, 96vw);
+  border:1px solid var(--expanded-border);
+  border-radius:16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 8px 24px rgba(0,0,0,.15);
+  overflow:hidden;
+  position:relative;
+  pointer-events:auto;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Smooth content reveal */
+.expanded__header,
+.expanded__content {
+  animation: contentFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
+}
+
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 560px){
+  .expanded{
+    width:100%;
+    border-radius:12px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .expanded__header{
+    padding: 20px 20px 14px;
+  }
+  .expanded__content{
+    padding: 20px;
+    gap: 16px;
+  }
+}
+.close{
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a2b3c;
+  font-size: 28px;
+  line-height: 48px;
+  text-align: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  font-weight: 300;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close:hover{
+  background: #ffffff;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 3px 12px rgba(0, 0, 0, 0.18);
+  color: #c1121f;
+}
+
+.close:active{
+  transform: rotate(90deg) scale(1.05);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 560px){
+  .close{
+    width: 44px;
+    height: 44px;
+    font-size: 26px;
+    line-height: 44px;
+    top: 12px;
+    right: 12px;
+  }
+}
+.expanded__header{
+  padding: 28px 28px 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 251, 252, 0.95) 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.expanded__header h3{
+  margin:0;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  color: #1a2b3c;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  line-height: 1.2;
+}
+.expanded__content{
+  display:grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 24px;
+  padding: 24px;
+  background: #ffffff;
+}
+@media(max-width:900px){
+  .expanded__content{
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+.slider{
+  position:relative;
+  overflow:hidden;
+  border:none;
+  border-radius:12px;
+  background:#f8f9fb;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Image counter badge */
+.slider::after{
+  content: attr(data-count);
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  z-index: 5;
+  pointer-events: none;
+}
+.slider__track{
+  display:flex;
+  margin:0;
+  padding:0;
+  list-style:none;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slider__slide{
+  min-width:100%;
+  aspect-ratio:16/9;
+  background:#f1f5fb;
+  position:relative;
+}
+.slider__slide img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition: transform 0.3s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .slider__slide:hover img{
+    transform: scale(1.02);
+  }
+}
+.nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(255, 255, 255, 0.95);
+  color:#1a2b3c;
+  border:none;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  cursor:pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,.15), 0 2px 6px rgba(0,0,0,.1);
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  z-index: 10;
+}
+.nav:hover{
+  background:#ffffff;
+  transform: translateY(-50%) scale(1.15);
+  box-shadow: 0 6px 20px rgba(0,0,0,.25), 0 3px 10px rgba(0,0,0,.15);
+  color: var(--brand-blue);
+}
+.nav:active{
+  transform: translateY(-50%) scale(1.05);
+}
+.prev{ left:12px }
+.next{ right:12px }
+
+@media (max-width: 560px) {
+  .nav{
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+  .prev{ left:8px }
+  .next{ right:8px }
+}
+
+.expanded__text{
+  border:none;
+  border-radius:12px;
+  padding: 20px;
+  max-height: 400px;
+  overflow:auto;
+  background: linear-gradient(135deg, #f8f9fb 0%, #ffffff 100%);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+  line-height: 1.7;
+}
+@media (max-width: 900px){
+  .expanded__text{
+    max-height: 300px;
+  }
+}
+@media (max-width: 560px){
+  .expanded__text{
+    max-height: 280px;
+    padding: 16px;
+  }
+}
+.expanded__text p{
+  margin:0 0 14px;
+  line-height:1.7;
+  color: #2d3748;
+  font-size: clamp(14px, 2vw, 16px);
+}
+.expanded__text p:last-child{
+  margin-bottom: 0;
+}
+
+/* Smooth scrollbar for modal text */
+.expanded__text::-webkit-scrollbar{
+  width: 8px;
+}
+.expanded__text::-webkit-scrollbar-track{
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+}
+.expanded__text::-webkit-scrollbar-thumb{
+  background: rgba(28, 90, 163, 0.3);
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+.expanded__text::-webkit-scrollbar-thumb:hover{
+  background: rgba(28, 90, 163, 0.5);
+}
 
 /* ------------------- CONTACT SECTION ------------------- */
-.contact-section{ background: var(--strip); border-top: 4px solid var(--strip-border); padding: clamp(36px, 6vw, 72px) 0; }
-.contact-title{ margin:0 0 14px; font-size: clamp(24px,3.2vw,34px); color:#0f2732; text-align:center; }
+.contact-section{
+  background: linear-gradient(180deg, var(--strip) 0%, rgba(212, 232, 247, 0.6) 100%);
+  border-top: 4px solid var(--strip-border);
+  padding: clamp(36px, 6vw, 72px) 0;
+  box-shadow: inset 0 4px 12px rgba(28, 90, 163, 0.08);
+}
+.contact-title{
+  margin:0 0 14px;
+  font-size: clamp(24px,3.2vw,34px);
+  color:#0f2732;
+  text-align:center;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Facebook Section */
+.facebook-section{
+  text-align: center;
+  margin: 32px auto 40px;
+  padding: 36px 28px;
+  max-width: 680px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+  border-radius: 20px;
+  border: 3px solid rgba(24, 119, 242, 0.25);
+  box-shadow: 0 8px 28px rgba(24, 119, 242, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.facebook-section:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(24, 119, 242, 0.18);
+  border-color: rgba(24, 119, 242, 0.35);
+}
+
+.facebook-title{
+  margin: 0 0 12px;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 800;
+  color: #1877f2;
+  letter-spacing: -0.3px;
+}
+
+.facebook-description{
+  margin: 0 0 24px;
+  font-size: clamp(15px, 2.2vw, 17px);
+  line-height: 1.6;
+  color: #2f4750;
+  font-weight: 500;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.facebook-button{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 40px;
+  font-size: clamp(16px, 2.3vw, 19px);
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1877f2 0%, #0c62d6 100%);
+  border: none;
+  border-radius: 12px;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 20px rgba(24, 119, 242, 0.35);
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.facebook-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transition: left 0.6s ease;
+}
+
+.facebook-button:hover::before {
+  left: 100%;
+}
+
+.facebook-button:hover{
+  background: linear-gradient(135deg, #0c62d6 0%, #0a4fb8 100%);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(24, 119, 242, 0.5);
+}
+
+.facebook-button:active{
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 18px rgba(24, 119, 242, 0.4);
+}
+
+.facebook-icon{
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
 .contact-lines{ max-width: 720px; margin: 0 auto; text-align:center; padding: 0 8px; }
 .contact-block{ margin: 10px auto 14px; }
 .contact-label{ display:block; font-weight:700; color:#0f2732; margin-bottom:6px; font-size: clamp(18px, 2.6vw, 20px); }
@@ -898,17 +1875,105 @@ body{
 .contact-note{ margin-top:6px; color:#2f4750; font-size: clamp(14px, 2vw, 16px); }
 
 /* -------- Additional Resources (CARD GRID) -------- */
-.section--resources{ position:relative; overflow:hidden; }
-.resources-video-bg{ position:absolute; inset:0; z-index:0; }
-.resources-video-bg__media{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter: brightness(1) saturate(1.05); }
-.resources-video-bg__scrim{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.38)); }
+.section--resources{
+  position:relative;
+  overflow:hidden;
+  background: linear-gradient(180deg,
+    #0a1f3d 0%,
+    #0d2847 50%,
+    #0a1f3d 100%
+  );
+}
 .section--resources > .container{ position:relative; z-index:1; }
-@media (prefers-reduced-motion: reduce){ .resources-video-bg__media{ display:none; } }
 
-.resources-title{ text-align:center; color:#0f2732; font-size: clamp(20px, 2.8vw, 26px); margin: 0 0 18px; font-weight:800; }
+/* Bubbles Animation */
+.resources{
+  position: relative;
+  overflow: visible;
+  width: 100%;
+  padding: clamp(22px, 5vw, 56px) 0;
+}
+
+.ambient-bubble{
+  position: absolute;
+  bottom: -80px;
+  background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.7), rgba(200, 230, 255, 0.3));
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatUp linear forwards;
+  box-shadow:
+    inset 0 0 15px rgba(255, 255, 255, 0.4),
+    inset -3px -3px 8px rgba(100, 150, 200, 0.2),
+    0 4px 12px rgba(11, 99, 200, 0.15);
+  z-index: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0) translateZ(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(var(--drift, 0px)) translateZ(0);
+    opacity: 0;
+  }
+}
+
+.ambient-bubble::before{
+  content: '';
+  position: absolute;
+  top: 12%;
+  left: 18%;
+  width: 35%;
+  height: 35%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.9), transparent 70%);
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+.cursor-bubble{
+  position: absolute;
+  background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.85), rgba(180, 220, 255, 0.4));
+  border-radius: 50%;
+  pointer-events: none;
+  animation: cursorBubbleFloat 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  box-shadow:
+    inset 0 0 8px rgba(255, 255, 255, 0.5),
+    0 2px 8px rgba(11, 99, 200, 0.2);
+  z-index: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+@keyframes cursorBubbleFloat {
+  0% {
+    transform: translate(0, 0) scale(0.4) translateZ(0);
+    opacity: 0.9;
+  }
+  100% {
+    transform:
+      translate(
+        calc((var(--random-x, 0.5) - 0.5) * 50px),
+        calc(-90px - var(--random-y, 0.5) * 30px)
+      )
+      scale(1.3)
+      translateZ(0);
+    opacity: 0;
+  }
+}
+
+.resources-title{ text-align:center; color:#ffffff; font-size: clamp(20px, 2.8vw, 26px); margin: 0 0 18px; font-weight:800; position: relative; z-index: 2; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
 
 /* Card grid */
-.resources-cards{ display:grid; gap: clamp(16px, 2.2vw, 24px); grid-template-columns: repeat(3, 1fr); }
+.resources-cards{ display:grid; gap: clamp(16px, 2.2vw, 24px); grid-template-columns: repeat(3, 1fr); position: relative; z-index: 2; }
 @media (max-width: 1050px){ .resources-cards{ grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px){ .resources-cards{ grid-template-columns: 1fr; } }
 
@@ -1001,11 +2066,86 @@ body{
 }
 
 /* CTA & Powered by */
-.resources-cta{ margin-top: clamp(18px, 3vw, 26px); color:#0f2732; font-weight:700; text-align:center; font-size: clamp(16px, 2.4vw, 20px); }
-.resources-cta-link{ color:#fff; text-decoration: underline; font-style: italic; font-weight:700; }
-.resources-cta-sub{ color:#ffffff; }
-.poweredby{ margin-top: 12px; text-align: center; }
-.poweredby__text{ color:#0f2732; font-weight: 700; font-size: clamp(14px, 2.2vw, 16px); margin-bottom: 6px; }
+.resources-cta{ margin-top: clamp(18px, 3vw, 26px); color:#e8f2ff; font-weight:700; text-align:center; font-size: clamp(16px, 2.4vw, 20px); position: relative; z-index: 2; }
+.resources-cta-link{ color:#6eb9ff; text-decoration: underline; font-style: italic; font-weight:700; transition: color 0.2s ease; }
+.resources-cta-link:hover{ color:#8fc9ff; }
+.resources-cta-sub{ color:#b8d9ff; }
+
+/* Locations Section */
+.locations-section{
+  margin-top: clamp(32px, 5vw, 48px);
+  text-align: center;
+  padding: 28px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  z-index: 2;
+}
+
+.locations-title{
+  margin: 0 0 24px;
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.3px;
+}
+
+.locations-buttons{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.location-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 700;
+  color: #1a2b3c;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+  border: 2px solid rgba(28, 90, 163, 0.2);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.location-btn:hover{
+  background: linear-gradient(135deg, #1c5aa3 0%, #0b63c8 100%);
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(28, 90, 163, 0.35);
+  border-color: #1c5aa3;
+}
+
+.location-btn:active{
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(28, 90, 163, 0.3);
+}
+
+@media (max-width: 560px){
+  .locations-buttons{
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .location-btn{
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+
+.poweredby{ margin-top: 24px; text-align: center; position: relative; z-index: 2; }
+.poweredby__text{ color:#d8e8ff; font-weight: 700; font-size: clamp(14px, 2.2vw, 16px); margin-bottom: 6px; }
 .poweredby__chip{
   display:inline-flex; align-items:center; justify-content:center;
   padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,.10);
@@ -1018,6 +2158,7 @@ body{
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce){
   *, *::before, *::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  .ambient-bubble, .cursor-bubble{ display: none !important; }
 }
 
 /* ================= WINTER PAGE STYLES & FLAIR ================= */
