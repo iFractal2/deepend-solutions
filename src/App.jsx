@@ -729,9 +729,9 @@ function AdditionalResources() {
             poolwerx.com
           </a>
           <br />
-           <span className="resources-cta-sub">972-962-9119</span>
+           <a href="tel:+19729629119" className="resources-cta-sub" style={{ textDecoration: 'none', color: 'inherit' }}>972-962-9119</a>
            <br />
-           <span className="resources-cta-sub">deepend@poolwerx.com</span>
+           <a href="mailto:deepend@poolwerx.com" className="resources-cta-sub" style={{ textDecoration: 'none', color: 'inherit' }}>deepend@poolwerx.com</a>
         </p>
 
         {/* Visit Our Locations */}
@@ -2069,7 +2069,8 @@ body{
 .resources-cta{ margin-top: clamp(18px, 3vw, 26px); color:#e8f2ff; font-weight:700; text-align:center; font-size: clamp(16px, 2.4vw, 20px); position: relative; z-index: 2; }
 .resources-cta-link{ color:#6eb9ff; text-decoration: underline; font-style: italic; font-weight:700; transition: color 0.2s ease; }
 .resources-cta-link:hover{ color:#8fc9ff; }
-.resources-cta-sub{ color:#b8d9ff; }
+.resources-cta-sub{ color:#b8d9ff; transition: color 0.2s ease, transform 0.2s ease; display: inline-block; cursor: pointer; }
+.resources-cta-sub:hover{ color:#ffffff; transform: translateY(-1px); }
 
 /* Locations Section */
 .locations-section{
