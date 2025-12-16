@@ -739,7 +739,7 @@ function AdditionalResources() {
           <h3 className="locations-title">Come visit one of our locations!</h3>
           <div className="locations-buttons">
             <a
-              href="https://www.poolwerx.com/locations/texas/poolwerx-north-richland-hills/"
+              href="https://share.google/xGXV4dUcI8H6hXbDe"
               target="_blank"
               rel="noopener noreferrer"
               className="location-btn"
@@ -747,7 +747,7 @@ function AdditionalResources() {
               North Richland Hills
             </a>
             <a
-              href="https://www.poolwerx.com/locations/texas/poolwerx-roanoke/"
+              href="https://share.google/qS8aTDJFJ1t4ETdpn"
               target="_blank"
               rel="noopener noreferrer"
               className="location-btn"
@@ -755,7 +755,7 @@ function AdditionalResources() {
               Roanoke
             </a>
             <a
-              href="https://www.poolwerx.com/locations/texas/poolwerx-denton/"
+              href="https://share.google/56BInjZxxwXl6ow54"
               target="_blank"
               rel="noopener noreferrer"
               className="location-btn"
@@ -763,7 +763,7 @@ function AdditionalResources() {
               Lantana
             </a>
             <a
-              href="https://www.poolwerx.com/locations/texas/poolwerx-flower-mound/"
+              href="https://share.google/95HyIZKhxfc67PTFt"
               target="_blank"
               rel="noopener noreferrer"
               className="location-btn"
